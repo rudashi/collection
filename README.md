@@ -6,6 +6,9 @@ Easy and elegant wrapper for PHP arrays.
 - [Installation](#installation)
 - [Basic Usage](#basic-usage)
   - [Create](#create)
+  - [Access](#access)
+  - [Mutation](#mutation)
+  - [Available Methods](#available-methods)
 - [Documentation](#documentation)
 
 ## Installation
@@ -22,6 +25,31 @@ composer require rudashi/collection
 * [__construct()](#__construct)
 * [from()](#from)
 
+### Access
+
+* [all()](#all)
+* [count()](#count)
+* [@property length](#length)
+* [keys()](#keys)
+* [toArray()](#toarray)
+* [values()](#values)
+
+### Mutation
+
+* [map()](#map)
+* [push()](#push)
+
+### Available Methods
+
+* [all()](#all)
+* [from()](#from)
+* [keys()](#keys)
+* [map()](#map)
+* [values()](#values)
+* [toArray()](#toarray)
+* [count()](#count)
+* [push()](#push)
+
 ## Documentation
 
 ### map() function
@@ -36,7 +64,24 @@ map([1, 2, 3]);
 new \Rudashi\Map([[1, 2], [2, 4], [4, 8]]);
 ```
 
-### from
+### length
+Alias for the [count()](#count) method.
+
+### all()
+
+Returns all the items in the collection.
+```php
+new \Rudashi\Map([1, 2, 3])->all();
+// [ 1, 2, 3 ]
+```
+### count()
+
+Returns the number of elements
+```php
+new \Rudashi\Map(['a', 'b', 'c'])->count();
+// 3
+```
+### from()
 
 #### From a String
 
@@ -82,4 +127,42 @@ $mapper = new \Rudashi\Map([['1', 'a'], ['2', 'b']]);
 ```php
 \Rudashi\Map::from('{"a": "b"}')
 // [ 'a' => 'b' ]
+```
+()
+### keys()
+
+Returns a new instance that contains the keys.
+```php
+new \Rudashi\Map(['a', 'b', 'c'])->keys();
+// [ 0, 1, 2 ]
+```
+### map()
+
+Method creates a new instance populated with the results of calling a provided function on every element.
+```php
+new \Rudashi\Map([1, 4, 9, 16])->map(function ($item, $key) {
+    return $item * 2;
+});
+// [ 2, 8, 18, 32 ]
+```
+### push()
+
+Method adds one or more elements to the end.
+```php
+new \Rudashi\Map(['pigs', 'goats', 'sheep'])->push('cows', 'cats');
+// [ 'pigs', 'goats', 'sheep', 'cows', 'cats' ]
+```
+### toArray()
+
+Returns all the items as plain array.
+```php
+new \Rudashi\Map([1, 2, 3])->toArray();
+// [ 1, 2, 3 ]
+```
+### values()
+
+Returns a new instance that contains the values with reset keys.
+```php
+new \Rudashi\Map(['a', 'b', 'c'])->values();
+// [ 'a', 'b', 'c' ]
 ```
