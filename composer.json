@@ -1,0 +1,29 @@
+{
+    "name": "rudashi/collection",
+    "description": "A simple and elegant wrapper for PHP arrays that allows you to chain methods similar to jQuery or Laravel.",
+    "license": "MIT",
+    "keywords": ["php", "array", "map", "collection"],
+    "require": {
+        "php": "^7.4||^8.0",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "~9.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Rudashi\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ],
+        "classmap": [
+            "src/"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    }
+}
