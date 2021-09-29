@@ -1,4 +1,7 @@
+<?xml version="1.0"?>
 <phpunit
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
         backupGlobals="false"
         backupStaticAttributes="false"
         bootstrap="./vendor/autoload.php"
@@ -15,14 +18,9 @@
             <directory suffix=".php">./tests/</directory>
         </testsuite>
     </testsuites>
-    <filter>
-        <whitelist>
-            <directory suffix=".php">src/</directory>
-        </whitelist>
-    </filter>
     <php>
-        <ini name="error_reporting" value="E_ALL" />
-        <ini name="display_errors" value="On" />
-        <ini name="display_startup_errors" value="On" />
+        <ini name="error_reporting" value="E_ALL"/>
+        <ini name="display_errors" value="On"/>
+        <ini name="display_startup_errors" value="On"/>
     </php>
 </phpunit>
