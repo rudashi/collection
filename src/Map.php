@@ -6,6 +6,7 @@ use Exception;
 use JsonException;
 use Rudashi\Contracts\ArrayInterface;
 use Rudashi\Contracts\EnumeratedInterface;
+use Rudashi\Contracts\JavaScriptArrayInterface;
 use Rudashi\Traits\Arrayable;
 use Traversable;
 use TypeError;
@@ -13,7 +14,7 @@ use TypeError;
 /**
  * @property int $length
  */
-class Map implements EnumeratedInterface, ArrayInterface
+class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterface
 {
     use Arrayable;
 
@@ -64,6 +65,56 @@ class Map implements EnumeratedInterface, ArrayInterface
     }
 
     /**
+     * Merge two or more arrays to new instance.
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/concat
+     *
+     * @param mixed $elements
+     * @return static
+     */
+    public function concat(...$elements): self
+    {
+        $result = new static($this);
+
+        foreach ($elements as $args) {
+            if ($args instanceof self) {
+                foreach ($args->all() as $item) {
+                    $result->push($item);
+                }
+            } else {
+                foreach ((array) $args as $item) {
+                    $result->push($item);
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * Copies part of an array to another location in the same array and returns it without modifying its length.
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/copyWithin
+     *
+     * @param int $target
+     * @param int $start
+     * @param int|null $end
+     * @return static
+     */
+    public function copyWithin(int $target, int $start = 0, int $end = null): self
+    {
+        $count = $this->count();
+        $length = $end ? abs($start - $end) : $count;
+
+        if ($start === 0 && ($target === 0 || $target >= $count)) {
+            return $this;
+        }
+
+        $items = array_slice($this->items, $start, $length);
+        array_splice($this->items, $target, count($items), $items);
+        $this->items = array_slice($this->items, 0, $count);
+
+        return $this;
+    }
+
+    /**
      * Returns the number of elements.
      * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/length
      *
@@ -72,6 +123,24 @@ class Map implements EnumeratedInterface, ArrayInterface
     public function count(): int
     {
         return count($this->items);
+    }
+
+    /**
+     * Returns a new instance with all elements that pass the test implemented by the provided callback.
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
+     *
+     * @param callable|null $callback
+     * @param bool $reset_keys
+     * @return static
+     */
+    public function filter(callable $callback = null, bool $reset_keys = false): self
+    {
+        if ($callback) {
+            $items = array_filter($this->items, $callback, ARRAY_FILTER_USE_BOTH);
+        } else {
+            $items = array_filter($this->items);
+        }
+        return new static($reset_keys ? array_values($items) : $items);
     }
 
     /**
@@ -130,6 +199,22 @@ class Map implements EnumeratedInterface, ArrayInterface
     public function all(): array
     {
         return $this->items;
+    }
+
+    public function get($key, $default = null)
+    {
+        if (array_key_exists($key, $this->items)) {
+            return $this->items[$key];
+        }
+
+        return $default instanceof \Closure ? $default() : $default;
+    }
+
+    public function set($key, $value): self
+    {
+        $this->items[$key] = $value;
+
+        return $this;
     }
 
     public function toArray(): array
