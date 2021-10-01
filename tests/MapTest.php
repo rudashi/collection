@@ -208,6 +208,25 @@ class MapTest extends TestCase
         self::assertEquals([1, 2, 3, 3, 4], (new Map([1, 2, 3, 4, 5]))->copyWithin(-2, -3, -1)->toArray());
     }
 
+    public function test_entries(): void
+    {
+        $map = new Map(['a', 'b', 'c']);
+
+        self::assertEquals([0 => 'a', 1 => 'b', 2 => 'c'], $map->entries());
+    }
+
+    public function test_every(): void
+    {
+        $isBigEnough = static function($value) {
+            return $value >= 10;
+        };
+
+        self::assertFalse((new Map([12, 5, 8, 130, 44]))->every($isBigEnough));
+        self::assertTrue((new Map([12, 54, 18, 130, 44]))->every($isBigEnough));
+
+        self::assertTrue((new Map([1, 30, 39, 29, 10, 13]))->every(fn($value) => $value < 40));
+    }
+
 //    public function testIsArray(): void
 //    {
 //        self::assertTrue(Map::isArray([1, 2, 3]));
@@ -225,27 +244,8 @@ class MapTest extends TestCase
 //
 //    }
 
-//    public function testEntries(): void
-//    {
-//        $map = new Map(['a', 'b', 'c']);
-//
-//        self::assertEquals([0 => 'a', 1 => 'b', 2 => 'c'], $map->entries());
-//    }
-//
-//    public function testEvery(): void
-//    {
-//        $isBigEnough = function($value) {
-//            return $value >= 10;
-//        };
-//
-//        self::assertFalse((new Map([12, 5, 8, 130, 44]))->every($isBigEnough));
-//        self::assertTrue((new Map([12, 54, 18, 130, 44]))->every($isBigEnough));
-//
-//        self::assertTrue((new Map([1, 30, 39, 29, 10, 13]))->every(function($value) {
-//            return $value < 40;
-//        }));
-//    }
-//
+
+
 //    public function testEveryWhenModified(): void
 //    {
 //        $map = new Map([1, 2, 3, 4]);
@@ -1097,12 +1097,6 @@ class MapTest extends TestCase
 //        $this->assertFalse( Map::from( ['1', '2'] )->in( 2, true ) );
 //    }
 //
-//
-//    public function testIncludes()
-//    {
-//        $this->assertTrue( Map::from( ['a', 'b'] )->includes( 'a' ) );
-//        $this->assertFalse( Map::from( ['a', 'b'] )->includes( 'x' ) );
-//    }
 //
 //
 //    public function testIntersect()

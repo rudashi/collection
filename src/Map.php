@@ -126,6 +126,35 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
     }
 
     /**
+     * Returns an array that contains the key/value pairs of map
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/entries
+     *
+     * @return array
+     */
+    public function entries(): array
+    {
+        return $this->toArray();
+    }
+
+    /**
+     * Determine if all items pass the test implemented by callback test.
+     *
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every
+     * @param  callable  $callback
+     * @return bool
+     */
+    public function every(callable $callback): bool
+    {
+        foreach ($this->items as $key => $item) {
+            if ($callback($item, $key) === false) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
      * Returns a new instance with all elements that pass the test implemented by the provided callback.
      * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
      *
