@@ -281,4 +281,18 @@ class MapJavaScriptArrayTest extends TestCase
         $this->assertNull($map->find(fn($value) => $value === 5));
     }
 
+    public function test_findIndex(): void
+    {
+        $map = new Map([5, 12, 8, 130, 44]);
+
+        self::assertEquals(3, $map->findIndex(fn($value) => $value > 13));
+    }
+
+    public function test_findIndex_nothing(): void
+    {
+        $map = new Map([1, 2, 3, 4]);
+
+        $this->assertNull($map->findIndex(fn($value) => $value === 5));
+    }
+
 }

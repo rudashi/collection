@@ -24,7 +24,6 @@ composer require rudashi/collection
 * [function map()](#map-function)
 * [__construct()](#__construct)
 * [from()](#from)
-* [fill()](#fill)
 
 ### Access
 
@@ -35,6 +34,7 @@ composer require rudashi/collection
 * [every()](#every)
 * [filter()](#filter)
 * [find()](#find)
+* [findIndex()](#findindex)
 * [includes()](#includes)
 * [keys()](#keys)
 * [toArray()](#toarray)
@@ -58,6 +58,7 @@ composer require rudashi/collection
 * [fill()](#fill)
 * [filter()](#filter)
 * [find()](#find)
+* [findIndex()](#findindex)
 * [from()](#from)
 * [includes()](#includes)
 * [keys()](#keys)
@@ -133,6 +134,12 @@ Returns the first matching element where the callback returns TRUE.
 ```php
 new \Rudashi\Map(['a', 'b', 'c'])->find(fn($v) => $v === 'c');
 // 'c'
+```
+### findIndex()
+Returns the first matching element where the callback returns TRUE.
+```php
+new \Rudashi\Map(['a', 'b', 'c'])->findIndex(fn($v) => $v === 'c');
+// 2
 ```
 ### from()
 #### From a String

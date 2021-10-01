@@ -260,6 +260,24 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
     }
 
     /**
+     * Returns index the first matching element where the callback returns TRUE.
+     * If no values satisfy the testing function, null is returned.
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex
+     *
+     * @param Closure $callback
+     * @return int|string|null
+     */
+    public function findIndex(Closure $callback)
+    {
+        foreach ($this->items as $key => $value) {
+            if ($callback($value, $key)) {
+                return $key;
+            }
+        }
+        return null;
+    }
+
+    /**
      * Returns a new instance that contains the keys.
      * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/keys
      *
