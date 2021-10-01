@@ -24,6 +24,7 @@ composer require rudashi/collection
 * [function map()](#map-function)
 * [__construct()](#__construct)
 * [from()](#from)
+* [fill()](#fill)
 
 ### Access
 
@@ -33,6 +34,7 @@ composer require rudashi/collection
 * [entries()](#entries)
 * [every()](#every)
 * [filter()](#filter)
+* [find()](#find)
 * [includes()](#includes)
 * [keys()](#keys)
 * [toArray()](#toarray)
@@ -42,6 +44,7 @@ composer require rudashi/collection
 
 * [concat()](#concat)
 * [copyWithin()](#copywithin)
+* [fill()](#fill)
 * [map()](#map)
 * [push()](#push)
 
@@ -52,7 +55,9 @@ composer require rudashi/collection
 * [copyWithin()](#copywithin)
 * [entries()](#entries)
 * [every()](#every)
+* [fill()](#fill)
 * [filter()](#filter)
+* [find()](#find)
 * [from()](#from)
 * [includes()](#includes)
 * [keys()](#keys)
@@ -65,13 +70,11 @@ composer require rudashi/collection
 ## Documentation
 
 ### map() function
-
 ```php
 map([1, 2, 3]);
 ```
 
 ### __construct
-
 ```php
 new \Rudashi\Map([[1, 2], [2, 4], [4, 8]]);
 ```
@@ -113,11 +116,23 @@ new \Rudashi\Map([3, 4, 9, 16])->every(function ($value) {
 });
 // false
 ```
+### fill()
+Returns a new instance with changes all items, from a start index to an end index.
+```php
+new Map([1, 2, 3])->fill(4);
+// [ 4, 4, 4 ]
+```
 ### filter()
 Returns new instance with all elements that pass the test implemented by the provided callback.
 ```php
 new \Rudashi\Map(['a', 'b', 'c'])->filter(fn($v) => $v !== 'a');
 // [ 'b', 'c' ]
+```
+### find()
+Returns the first matching element where the callback returns TRUE.
+```php
+new \Rudashi\Map(['a', 'b', 'c'])->find(fn($v) => $v === 'c');
+// 'c'
 ```
 ### from()
 #### From a String

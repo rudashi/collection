@@ -233,4 +233,52 @@ class MapJavaScriptArrayTest extends TestCase
         self::assertFalse($isSubset([1, 2, 3, 4, 5, 6, 7], [5, 8, 7]));
     }
 
+    public function test_fill(): void
+    {
+        $map = new Map([1, 2, 3]);
+
+        self::assertEquals([4, 4, 4], $map->fill(4)->toArray());
+        self::assertEquals([1, 4, 4], $map->fill(4, 1)->toArray());
+        self::assertEquals([1, 4, 3], $map->fill(4, 1, 2)->toArray());
+        self::assertEquals([1, 2, 3], $map->fill(4, 1, 1)->toArray());
+        self::assertEquals([1, 2, 3], $map->fill(4, 3, 3)->toArray());
+        self::assertEquals([4, 2, 3], $map->fill(4, -3, -2)->toArray());
+        self::assertEquals([1, 2, 3], $map->fill(4, 3, 5)->toArray());
+        self::assertEquals([(object) ['foo' => 'bar'], (object) ['foo' => 'bar'], (object) ['foo' => 'bar']], $map->fill((object) ['foo' => 'bar'])->toArray());
+        self::assertEquals([4, 4, 4], Map::from(3)->fill(4)->toArray());
+    }
+
+    public function test_fill_matrix(): void
+    {
+        $map = Map::from(3);
+
+        foreach ($map->all() as $index => $item) {
+            $map->set($index, Map::from(4)->fill(1));
+        }
+        $map->get(0)->set(0, 10);
+
+        self::assertEquals(10, $map->get(0)->get(0));
+        self::assertEquals(1, $map->get(1)->get(0));
+        self::assertEquals(1, $map->get(2)->get(0));
+    }
+
+    public function test_find(): void
+    {
+        $map = new Map([
+            ['name' => 'apples', 'quantity' => 2],
+            ['name' => 'bananas', 'quantity' => 0],
+            ['name' => 'cherries', 'quantity' => 5]
+        ]);
+
+        self::assertEquals(['name' => 'cherries', 'quantity' => 5], $map->find(fn($value) => $value['name'] === 'cherries'));
+        self::assertEquals(['name' => 'bananas', 'quantity' => 0], $map->find(fn($value) => $value['quantity'] === 0));
+    }
+
+    public function test_find_nothing(): void
+    {
+        $map = new Map([1, 2, 3, 4]);
+
+        $this->assertNull($map->find(fn($value) => $value === 5));
+    }
+
 }

@@ -196,6 +196,32 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
     }
 
     /**
+     * Returns a new instance with changes all items, from a start index to an end index.
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fill
+     *
+     * @param mixed $value
+     * @param int|null $start
+     * @param int|null $end
+     * @return static
+     */
+    public function fill($value, int $start = null, int $end = null): self
+    {
+        $result = new static($this);
+        $count = $result->count();
+
+        $start >>= 0;
+        $end = (is_int($end) === false) ? $count : $end >> 0;
+
+        $relStart = $start < 0 ? max($count + $start, 0) : min($start, $count);
+        $relEnd =  $end < 0 ? max($count + $end, 0) : min($end, $count);
+
+        for ($i = $relStart; $i < $relEnd; $i++) {
+            $result->set($i, $value);
+        }
+        return $result;
+    }
+
+    /**
      * Returns a new instance with all elements that pass the test implemented by the provided callback.
      * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter
      *
@@ -211,6 +237,26 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
             $items = array_filter($this->items);
         }
         return new static($reset_keys ? array_values($items) : $items);
+    }
+
+    /**
+     * Returns the first matching element where the callback returns TRUE.
+     * If no values satisfy the testing function, $default is returned.
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find
+     *
+     * @param Closure $callback
+     * @param mixed $default
+     * @return mixed
+     */
+    public function find(Closure $callback, $default = null)
+    {
+        foreach ($this->items as $key => $value) {
+            if ($callback($value, $key)) {
+                return $value;
+            }
+        }
+
+        return $default;
     }
 
     /**
