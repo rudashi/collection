@@ -2,6 +2,7 @@
 
 namespace Rudashi;
 
+use Closure;
 use Exception;
 use JsonException;
 use Rudashi\Contracts\ArrayInterface;
@@ -126,7 +127,47 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
     }
 
     /**
-     * Returns an array that contains the key/value pairs of map
+     * Determines whether it contains the given element.
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes
+     *
+     * @param mixed $element
+     * @param int $fromIndex
+     * @return bool
+     */
+    public function includes($element, int $fromIndex = 0): bool
+    {
+        if ($fromIndex > $this->count()) {
+            return false;
+        }
+
+        if ($fromIndex < 0) {
+            $fromIndex = $this->count() + $fromIndex;
+        }
+
+        if (is_array($element)) {
+            foreach ($element as $item) {
+                if ($this->includes($item, $fromIndex)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        $items = $fromIndex > 0 ? $this->filter(function ($value, $index) use ($fromIndex) {
+            return $index >= $fromIndex;
+        }, true) : $this;
+
+        if (is_float($element) && is_nan($element)) {
+            return $items->filter(function($value) {
+                return is_nan($value);
+            })->count() > 0;
+        }
+
+        return in_array($element, $items->all(), true);
+    }
+
+    /**
+     * Returns an array that contains the key/value pairs.
      * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/entries
      *
      * @return array
@@ -236,7 +277,7 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
             return $this->items[$key];
         }
 
-        return $default instanceof \Closure ? $default() : $default;
+        return $default instanceof Closure ? $default() : $default;
     }
 
     public function set($key, $value): self

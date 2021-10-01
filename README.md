@@ -30,7 +30,10 @@ composer require rudashi/collection
 * [@property length](#length)
 * [all()](#all)
 * [count()](#count)
+* [entries()](#entries)
+* [every()](#every)
 * [filter()](#filter)
+* [includes()](#includes)
 * [keys()](#keys)
 * [toArray()](#toarray)
 * [values()](#values)
@@ -47,8 +50,11 @@ composer require rudashi/collection
 * [all()](#all)
 * [concat()](#concat)
 * [copyWithin()](#copywithin)
+* [entries()](#entries)
+* [every()](#every)
 * [filter()](#filter)
 * [from()](#from)
+* [includes()](#includes)
 * [keys()](#keys)
 * [map()](#map)
 * [values()](#values)
@@ -97,6 +103,16 @@ Returns the number of elements.
 new \Rudashi\Map(['a', 'b', 'c'])->count();
 // 3
 ```
+### entries()
+Alias for the [toArray()](#toarray) method.
+### every()
+Determine if all items pass the test implemented by callback test.
+```php
+new \Rudashi\Map([3, 4, 9, 16])->every(function ($value) {
+    return $value < 4;
+});
+// false
+```
 ### filter()
 Returns new instance with all elements that pass the test implemented by the provided callback.
 ```php
@@ -137,6 +153,12 @@ $mapper = new \Rudashi\Map([['1', 'a'], ['2', 'b']]);
 ```php
 \Rudashi\Map::from('{"a": "b"}')
 // [ 'a' => 'b' ]
+```
+### includes()
+Determines whether it contains the given element.
+```php
+new \Rudashi\Map([1, 4, 9, 16])->includes(4);
+// true
 ```
 ### keys()
 Returns a new instance that contains the keys.
