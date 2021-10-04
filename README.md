@@ -35,7 +35,9 @@ composer require rudashi/collection
 * [filter()](#filter)
 * [find()](#find)
 * [findIndex()](#findindex)
+* [forEach()](#foreach)
 * [includes()](#includes)
+* [isArray()](#isarray)
 * [keys()](#keys)
 * [toArray()](#toarray)
 * [values()](#values)
@@ -46,6 +48,7 @@ composer require rudashi/collection
 * [copyWithin()](#copywithin)
 * [fill()](#fill)
 * [flat()](#flat)
+* [flatMap()](#flatmap)
 * [map()](#map)
 * [push()](#push)
 
@@ -61,8 +64,11 @@ composer require rudashi/collection
 * [find()](#find)
 * [findIndex()](#findindex)
 * [flat()](#flat)
+* [flatMap()](#flatmap)
+* [forEach()](#foreach)
 * [from()](#from)
 * [includes()](#includes)
+* [isArray()](#isarray)
 * [keys()](#keys)
 * [map()](#map)
 * [values()](#values)
@@ -149,6 +155,19 @@ Returns a new instance with all sub elements concatenated into it recursively up
 new \Rudashi\Map([1, 2, [3, 4]])->flat();
 // [1, 2, 3, 4]
 ```
+### flatMap()
+Returns a new instance formed by applying a given callback function to each element and then flattening the result by one level.
+```php
+new \Rudashi\Map([1, 2, 3, 4])->flatMap(fn ($x) => [$x, $x * 2]);
+// [1, 2, 2, 4, 3, 6, 4, 8]
+```
+### forEach()
+Method creates a new instance populated with the results of calling a provided function on every element.
+```php
+new \Rudashi\Map([1, 4, 9, 16])->forEach(function ($item, $key) {
+    //
+});
+```
 ### from()
 #### From a String
 ```php
@@ -188,6 +207,12 @@ $mapper = new \Rudashi\Map([['1', 'a'], ['2', 'b']]);
 Determines whether it contains the given element.
 ```php
 new \Rudashi\Map([1, 4, 9, 16])->includes(4);
+// true
+```
+### isArray()
+Determines whether the passed value is an Array.
+```php
+new Map::isArray([1, 2, 3, 4]);
 // true
 ```
 ### keys()

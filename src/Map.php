@@ -41,6 +41,14 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
         }
     }
 
+    /**
+     * Returns a new instance.
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/from
+     *
+     * @param mixed $items
+     * @param callable|null $callback
+     * @return static
+     */
     public static function from($items = null, callable $callback = null): self
     {
         if (is_string($items)) {
@@ -290,6 +298,48 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
     }
 
     /**
+     * Returns a new instance formed by applying a given callback function to each element and then flattening the result by one level.
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flatMap
+     *
+     * @param callable $callback
+     * @return static
+     */
+    public function flatMap(callable $callback): self
+    {
+        return $this->map($callback)->flat();
+    }
+
+    /**
+     * Execute a callback over each item.
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach
+     *
+     * @param callable $callback
+     * @return static
+     */
+    public function forEach(callable $callback): self
+    {
+        foreach ($this->items as $key => $item) {
+            if ($callback($item, $key) === false) {
+                break;
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Determines whether the passed value is an Array.
+     * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray
+     *
+     * @param mixed $items
+     * @return bool
+     */
+    public static function isArray($items): bool
+    {
+        return is_array($items);
+    }
+
+    /**
      * Returns a new instance that contains the keys.
      * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/keys
      *
@@ -361,6 +411,17 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
         $this->items[$key] = $value;
 
         return $this;
+    }
+
+    /**
+     * Determines whether the passed value is a Map.
+     *
+     * @param mixed $items
+     * @return bool
+     */
+    public static function isMap($items): bool
+    {
+        return $items instanceOf self;
     }
 
     public function toArray(): array

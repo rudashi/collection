@@ -72,6 +72,8 @@ class MapJavaScriptArrayTest extends TestCase
         self::assertEquals(0, $map->count());
 
         $map->push('a', 'b', 'c', 'd');
+
+        self::assertInstanceOf(Map::class, $map);
         self::assertEquals(4, $map->count());
         self::assertEquals(['a', 'b', 'c', 'd'], $map->toArray());
     }
@@ -135,6 +137,7 @@ class MapJavaScriptArrayTest extends TestCase
             return strlen($value) > 6;
         });
 
+        self::assertInstanceOf(Map::class, $results);
         self::assertEquals([3 => 'exuberant', 4 => 'destruction', 5 => 'present'], $results->toArray());
     }
 
@@ -145,6 +148,7 @@ class MapJavaScriptArrayTest extends TestCase
             return strlen($value) > 6;
         }, true);
 
+        self::assertInstanceOf(Map::class, $results);
         self::assertEquals([0 => 'exuberant', 1 => 'destruction', 2 => 'present'], $results->toArray());
     }
 
@@ -154,6 +158,8 @@ class MapJavaScriptArrayTest extends TestCase
         $first = $map->filter(fn($value) => stripos($value, 'ap') !== false, true);
         $second = $map->filter(fn($value) => stripos($value, 'an') !== false, true);
 
+        self::assertInstanceOf(Map::class, $first);
+        self::assertInstanceOf(Map::class, $second);
         self::assertEquals(['apple', 'grapes'], $first->toArray());
         self::assertEquals(['banana', 'mango', 'orange'], $second->toArray());
     }
@@ -163,6 +169,7 @@ class MapJavaScriptArrayTest extends TestCase
         $map = new Map([['id' => 1, 'name' => 'foo'], ['id' => 2, 'name' => 'bar']]);
         $mapper = $map->filter(fn($item) => $item['id'] === 2, true);
 
+        self::assertInstanceOf(Map::class, $mapper);
         self::assertEquals([['id' => 2, 'name' => 'bar']], $mapper->toArray());
     }
 
@@ -171,15 +178,17 @@ class MapJavaScriptArrayTest extends TestCase
         $map = new Map(['id' => 1, 'name' => 'foo', 'title' => 'bar']);
         $mapper = $map->filter(fn($item, $key) => $key !== 'id');
 
+        self::assertInstanceOf(Map::class, $mapper);
         self::assertEquals(['name' => 'foo', 'title' => 'bar'], $mapper->toArray());
     }
 
     public function test_filter_no_callback(): void
     {
         $map = new Map([1, 'foo', null, 3, false, '', 0, []]);
-        $result = $map->filter(null, true);
+        $mapper = $map->filter(null, true);
 
-        self::assertEquals([1, 'foo', 3], $result->toArray());
+        self::assertInstanceOf(Map::class, $mapper);
+        self::assertEquals([1, 'foo', 3], $mapper->toArray());
     }
 
     public function test_copy_within(): void
@@ -299,35 +308,115 @@ class MapJavaScriptArrayTest extends TestCase
     {
         $map = new Map([1, 2, [3, 4]]);
 
-        $this->assertEquals([1, 2, 3, 4], $map->flat()->toArray());
+        self::assertEquals([1, 2, 3, 4], $map->flat()->toArray());
     }
 
     public function test_flat_infinite(): void
     {
         $map = new Map([1, 2, [3, 4, [5, 6, [7, 8, [9, 10]]]]]);
 
-        $this->assertEquals([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], $map->flat(INF)->toArray());
+        self::assertEquals([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], $map->flat(INF)->toArray());
     }
 
     public function test_flat_none(): void
     {
         $map = new Map([0, 1, 2, [[[3, 4]]]]);
 
-        $this->assertEquals([0, 1, 2, [[[3, 4]]]], $map->flat(0)->toArray());
+        self::assertEquals([0, 1, 2, [[[3, 4]]]], $map->flat(0)->toArray());
     }
 
     public function test_flat_recursive(): void
     {
         $map = new Map([1, 2, [3, 4, [[5, 6]]]]);
 
-        $this->assertEquals([1, 2, 3, 4, [5, 6]], $map->flat(2)->toArray());
+        self::assertEquals([1, 2, 3, 4, [5, 6]], $map->flat(2)->toArray());
     }
 
     public function test_flat_traversable(): void
     {
         $map = new Map([[1, 2], new Map([3, 4, [5, 6]])]);
 
-        $this->assertEquals([1, 2, 3, 4, [5, 6]], $map->flat()->toArray());
+        self::assertEquals([1, 2, 3, 4, [5, 6]], $map->flat()->toArray());
     }
 
+    public function test_flatMap(): void
+    {
+        $map = new Map([1, 2, 3, 4]);
+
+        self::assertEquals([1, 2, 2, 4, 3, 6, 4, 8], $map->flatMap(fn($x) => [$x, $x * 2])->toArray());
+        self::assertEquals([[2], [4], [6], [8]], $map->flatMap(fn($x) => [[$x * 2]])->toArray());
+    }
+
+    public function test_flatMap_with_function(): void
+    {
+        $map = new Map(['it`s Sunny in', '', 'California']);
+        $mapper = $map->flatMap(fn($x) => explode(' ', $x));
+        
+        self::assertInstanceOf(Map::class, $mapper);
+        self::assertEquals(['it`s', 'Sunny', 'in', '', 'California'], $mapper->toArray());
+    }
+
+    public function test_flatMap_mutation(): void
+    {
+        $map = new Map([5, 4, -3, 20, 17, -33, -4, 18]);
+        $mapper = $map->flatMap(function($n) {
+            if ($n < 0) {
+                return [];
+            }
+            return ($n % 2 === 0) ? [$n] : [$n-1, 1];
+        });
+
+        self::assertInstanceOf(Map::class, $mapper);
+        self::assertEquals([4, 1, 4, 20, 16, 1, 18], $mapper->toArray());
+    }
+
+    public function test_forEach(): void
+    {
+        $map = new Map([2, 5, 9]);
+
+        $result = [];
+        $mapper = $map->forEach(function($element, $index) use (&$result) {
+            $result[$index] = $element * 2;
+        });
+
+        self::assertInstanceOf(Map::class, $map);
+        self::assertEquals([2, 5, 9], $mapper->toArray());
+        self::assertEquals([4, 10, 18], $result);
+    }
+
+    public function test_forEach_with_break(): void
+    {
+        $map = new Map([2, 5, '', 9]);
+
+        $result = [];
+        $mapper = $map->forEach(function($element, $index) use (&$result) {
+            if (is_string($element)) {
+                return false;
+            }
+            $result[$index] = $element * 2;
+            return true;
+        });
+
+        self::assertInstanceOf(Map::class, $map);
+        self::assertEquals([2, 5, '', 9], $mapper->toArray());
+        self::assertEquals([4, 10], $result);
+    }
+
+    public function test_isArray(): void
+    {
+        self::assertTrue(Map::isArray([1, 2, 3]));
+        self::assertFalse(Map::isArray(new Map([1, 2, 3])));
+        self::assertFalse(Map::isArray('foobar'));
+        self::assertFalse(Map::isArray(null));
+        self::assertFalse(Map::isArray((object) []));
+    }
+
+    public function test_isMap(): void
+    {
+        self::assertFalse(Map::isMap([1, 2, 3]));
+        self::assertTrue(Map::isMap(new Map([1, 2, 3])));
+        self::assertFalse(Map::isMap('foobar'));
+        self::assertFalse(Map::isMap(null));
+        self::assertFalse(Map::isMap((object) []));
+    }
 }
