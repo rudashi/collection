@@ -419,4 +419,33 @@ class MapJavaScriptArrayTest extends TestCase
         self::assertFalse(Map::isMap(null));
         self::assertFalse(Map::isMap((object) []));
     }
+
+    public function test_of(): void
+    {
+        $map = Map::of('a', 'b', ['c' => 1, null => 'd'], null);
+
+        self::assertInstanceOf(Map::class, $map);
+        self::assertEquals(['a', 'b', ['c' => 1, null => 'd'], null], $map->toArray());
+    }
+
+    public function test_indexOf(): void
+    {
+        $map = new Map(['ant', 'bison', 'camel', 'duck', 'bison']);
+
+        self::assertInstanceOf(Map::class, $map);
+        self::assertEquals(1, $map->indexOf('bison'));
+        self::assertEquals(4, $map->indexOf('bison', 2));
+        self::assertEquals(-1, $map->indexOf('giraffe'));
+    }
+
+    public function test_indexIf_on_multidimensional_array(): void
+    {
+        $map = new Map(['ant', 'bison', 'pet' => 'camel', 'duck', 'bison']);
+
+        self::assertInstanceOf(Map::class, $map);
+        self::assertEquals(1, $map->indexOf('bison'));
+        self::assertEquals('pet', $map->indexOf('camel'));
+        self::assertEquals(2, $map->indexOf('duck'));
+    }
+
 }

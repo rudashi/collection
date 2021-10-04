@@ -328,6 +328,25 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
     }
 
     /**
+     * Returns the first matching index which a given element can be found.
+     * If no value found, -1 is returned.
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf
+     *
+     * @param mixed $searchElement
+     * @param int $fromIndex
+     * @return int|string
+     */
+    public function indexOf($searchElement, int $fromIndex = 0)
+    {
+        foreach ($this->items as $index => $value) {
+            if ($index >= $fromIndex && $value === $searchElement) {
+                return $index;
+            }
+        }
+        return -1;
+    }
+
+    /**
      * Determines whether the passed value is an Array.
      * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/isArray
      *
@@ -363,6 +382,18 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
         $elements = array_map($callback, $this->items, $keys);
 
         return new static(array_combine($keys, $elements) ?: []);
+    }
+
+    /**
+     * Creates a new map instance from arguments.
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/of
+     *
+     * @param mixed $items
+     * @return static
+     */
+    public static function of(...$items): self
+    {
+        return new static($items);
     }
 
     /**

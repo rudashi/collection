@@ -24,6 +24,7 @@ composer require rudashi/collection
 * [function map()](#map-function)
 * [__construct()](#__construct)
 * [from()](#from)
+* [of()](#of)
 
 ### Access
 
@@ -37,6 +38,7 @@ composer require rudashi/collection
 * [findIndex()](#findindex)
 * [forEach()](#foreach)
 * [includes()](#includes)
+* [indexOf()](#indexof)
 * [isArray()](#isarray)
 * [keys()](#keys)
 * [toArray()](#toarray)
@@ -68,8 +70,10 @@ composer require rudashi/collection
 * [forEach()](#foreach)
 * [from()](#from)
 * [includes()](#includes)
+* [indexOf()](#indexof)
 * [isArray()](#isarray)
 * [keys()](#keys)
+* [of()](#of)
 * [map()](#map)
 * [values()](#values)
 * [toArray()](#toarray)
@@ -209,6 +213,12 @@ Determines whether it contains the given element.
 new \Rudashi\Map([1, 4, 9, 16])->includes(4);
 // true
 ```
+### indexOf()
+Returns the first matching index which a given element can be found.
+```php
+new \Rudashi\Map(['a', 'b', 'c'])->indexOf('c');
+// 2
+```
 ### isArray()
 Determines whether the passed value is an Array.
 ```php
@@ -228,6 +238,10 @@ new \Rudashi\Map([1, 4, 9, 16])->map(function ($item, $key) {
     return $item * 2;
 });
 // [ 2, 8, 18, 32 ]
+```
+### of()
+```php
+new \Rudashi\Map::of([[1, 2], [2, 4], [4, 8]]);
 ```
 ### push()
 Method adds one or more elements to the end.
