@@ -295,4 +295,39 @@ class MapJavaScriptArrayTest extends TestCase
         $this->assertNull($map->findIndex(fn($value) => $value === 5));
     }
 
+    public function test_flat(): void
+    {
+        $map = new Map([1, 2, [3, 4]]);
+
+        $this->assertEquals([1, 2, 3, 4], $map->flat()->toArray());
+    }
+
+    public function test_flat_infinite(): void
+    {
+        $map = new Map([1, 2, [3, 4, [5, 6, [7, 8, [9, 10]]]]]);
+
+        $this->assertEquals([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], $map->flat(INF)->toArray());
+    }
+
+    public function test_flat_none(): void
+    {
+        $map = new Map([0, 1, 2, [[[3, 4]]]]);
+
+        $this->assertEquals([0, 1, 2, [[[3, 4]]]], $map->flat(0)->toArray());
+    }
+
+    public function test_flat_recursive(): void
+    {
+        $map = new Map([1, 2, [3, 4, [[5, 6]]]]);
+
+        $this->assertEquals([1, 2, 3, 4, [5, 6]], $map->flat(2)->toArray());
+    }
+
+    public function test_flat_traversable(): void
+    {
+        $map = new Map([[1, 2], new Map([3, 4, [5, 6]])]);
+
+        $this->assertEquals([1, 2, 3, 4, [5, 6]], $map->flat()->toArray());
+    }
+
 }

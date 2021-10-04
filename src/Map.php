@@ -57,7 +57,7 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
             $items = range(0, $items - 1);
         }
         if (is_array($items)) {
-            return $callback ? (new self($items))->map($callback) : new self($items);
+            return $callback ? (new static($items))->map($callback) : new static($items);
         }
         if ($items instanceof self) {
             return $callback ? $items->map($callback) : $items;
@@ -278,6 +278,18 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
     }
 
     /**
+     * Returns a new instance with all sub elements concatenated into it recursively up to the specified depth.
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/flat
+     *
+     * @param float|int $depth
+     * @return static
+     */
+    public function flat($depth = 1): self
+    {
+        return new static($this->flatten($this->items, $depth));
+    }
+
+    /**
      * Returns a new instance that contains the keys.
      * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/keys
      *
@@ -372,6 +384,25 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
             return $this->count();
         }
         throw new Exception("Property [$name] does not exist on this collection instance.");
+    }
+
+    private function flatten(iterable $items, $depth = INF): array
+    {
+        $result = [];
+
+        foreach($items as $item) {
+            $item = $item instanceof EnumeratedInterface ? $item->all() : $item;
+
+            if(is_iterable($item) && $depth > 0) {
+                foreach ($this->flatten($item, $depth - 1) as $value) {
+                    $result[] = $value;
+                }
+            } else {
+                $result[] = $item;
+            }
+        }
+
+        return $result;
     }
 
 }

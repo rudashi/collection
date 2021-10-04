@@ -45,6 +45,7 @@ composer require rudashi/collection
 * [concat()](#concat)
 * [copyWithin()](#copywithin)
 * [fill()](#fill)
+* [flat()](#flat)
 * [map()](#map)
 * [push()](#push)
 
@@ -59,6 +60,7 @@ composer require rudashi/collection
 * [filter()](#filter)
 * [find()](#find)
 * [findIndex()](#findindex)
+* [flat()](#flat)
 * [from()](#from)
 * [includes()](#includes)
 * [keys()](#keys)
@@ -140,6 +142,12 @@ Returns the first matching element where the callback returns TRUE.
 ```php
 new \Rudashi\Map(['a', 'b', 'c'])->findIndex(fn($v) => $v === 'c');
 // 2
+```
+### flat()
+Returns a new instance with all sub elements concatenated into it recursively up to the specified depth.
+```php
+new \Rudashi\Map([1, 2, [3, 4]])->flat();
+// [1, 2, 3, 4]
 ```
 ### from()
 #### From a String
