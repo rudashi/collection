@@ -144,12 +144,14 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
      */
     public function includes($element, int $fromIndex = 0): bool
     {
-        if ($fromIndex > $this->count()) {
+        $length = $this->count();
+
+        if ($fromIndex > $length) {
             return false;
         }
 
         if ($fromIndex < 0) {
-            $fromIndex = $this->count() + $fromIndex;
+            $fromIndex = $length + $fromIndex;
         }
 
         if (is_array($element)) {
@@ -338,6 +340,14 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
      */
     public function indexOf($searchElement, int $fromIndex = 0)
     {
+        $length = $this->count();
+
+        if ($fromIndex > $length || $length === 0) {
+            return -1;
+        }
+
+        $fromIndex = $fromIndex < 0 ? $length + $fromIndex : $fromIndex;
+
         foreach ($this->items as $index => $value) {
             if ($index >= $fromIndex && $value === $searchElement) {
                 return $index;
@@ -359,6 +369,28 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
     }
 
     /**
+     * Concatenates the string representation of all elements.
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/join
+     *
+     * @param string $separator
+     * @return string
+     */
+    public function join(string $separator = ','): string
+    {
+        $items = $this->map(function($item) {
+            if ($item instanceof self || (is_array($item) && count($item) > 0)) {
+                $item = static::from($item)->flat(INF)->values()->join();
+            }
+            if (is_bool($item)) {
+                return $item ? 'true' : 'false';
+            }
+            return (is_array($item) && count($item) === 0) || is_null($item) ? '' : $item;
+        });
+
+        return $this->implode($separator, $items);
+    }
+
+    /**
      * Returns a new instance that contains the keys.
      * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/keys
      *
@@ -367,6 +399,30 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
     public function keys(): self
     {
         return new static(array_keys($this->items));
+    }
+
+    /**
+     * Returns the last matching index which a given element can be found.
+     * If no value found, -1 is returned.
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/lastIndexOf
+     *
+     * @param mixed $searchElement
+     * @return int|string
+     */
+    public function lastIndexOf($searchElement)
+    {
+        $length = $this->count();
+
+        if ($length === 0) {
+            return -1;
+        }
+
+        foreach (array_reverse($this->items, true) as $index => $value) {
+            if ($value === $searchElement) {
+                return $index;
+            }
+        }
+        return -1;
     }
 
     /**
@@ -410,6 +466,18 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
         }
 
         return $this;
+    }
+
+    /**
+     * Returns a new instance with the order of the elements reversed.
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse
+     *
+     * @param bool $preserve_keys
+     * @return static
+     */
+    public function reverse(bool $preserve_keys = false): self
+    {
+        return new static(array_reverse($this->items, $preserve_keys));
     }
 
     /**
@@ -495,6 +563,11 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
         }
 
         return $result;
+    }
+
+    private function implode(string $glue, $items): string
+    {
+        return implode($glue, $items instanceof self ? $items->all() : $items);
     }
 
 }

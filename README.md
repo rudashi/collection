@@ -41,6 +41,7 @@ composer require rudashi/collection
 * [indexOf()](#indexof)
 * [isArray()](#isarray)
 * [keys()](#keys)
+* [lastIndexOf()](#lastindexof)
 * [toArray()](#toarray)
 * [values()](#values)
 
@@ -51,8 +52,10 @@ composer require rudashi/collection
 * [fill()](#fill)
 * [flat()](#flat)
 * [flatMap()](#flatmap)
+* [join()](#join)
 * [map()](#map)
 * [push()](#push)
+* [reverse()](#reverse)
 
 ### Available Methods
 
@@ -72,9 +75,12 @@ composer require rudashi/collection
 * [includes()](#includes)
 * [indexOf()](#indexof)
 * [isArray()](#isarray)
+* [join()](#join)
 * [keys()](#keys)
+* [lastIndexOf()](#lastindexof)
 * [of()](#of)
 * [map()](#map)
+* [reverse()](#reverse)
 * [values()](#values)
 * [toArray()](#toarray)
 * [count()](#count)
@@ -102,7 +108,7 @@ new \Rudashi\Map([1, 2, 3])->all();
 // [ 1, 2, 3 ]
 ```
 ### concat()
-Returns the new instance with merged values.
+Returns a new instance with merged values.
 ```php
 new \Rudashi\Map(['a', 'b', 'c'])->concat(['d', 'e', 'f']);
 // [ 'a', 'b', 'c', 'd', 'e', 'f' ]
@@ -136,7 +142,7 @@ new Map([1, 2, 3])->fill(4);
 // [ 4, 4, 4 ]
 ```
 ### filter()
-Returns new instance with all elements that pass the test implemented by the provided callback.
+Returns a new instance with all elements that pass the test implemented by the provided callback.
 ```php
 new \Rudashi\Map(['a', 'b', 'c'])->filter(fn($v) => $v !== 'a');
 // [ 'b', 'c' ]
@@ -225,11 +231,23 @@ Determines whether the passed value is an Array.
 new Map::isArray([1, 2, 3, 4]);
 // true
 ```
+### join()
+Concatenates the string representation of all elements.
+```php
+new \Rudashi\Map(['a', 'b', 'c'])->join();
+// a,b,c
+```
 ### keys()
 Returns a new instance that contains the keys.
 ```php
 new \Rudashi\Map(['a', 'b', 'c'])->keys();
 // [ 0, 1, 2 ]
+```
+### lastIndexOf()
+Returns the last matching index which a given element can be found.
+```php
+new \Rudashi\Map(['c', 'a', 'b', 'c'])->lastIndexOf('c');
+// 3
 ```
 ### map()
 Method creates a new instance populated with the results of calling a provided function on every element.
@@ -245,6 +263,12 @@ new \Rudashi\Map::of([[1, 2], [2, 4], [4, 8]]);
 ```
 ### push()
 Method adds one or more elements to the end.
+```php
+new \Rudashi\Map(['pigs', 'goats', 'sheep'])->push('cows', 'cats');
+// [ 'pigs', 'goats', 'sheep', 'cows', 'cats' ]
+```
+### reverse()
+Returns a new instance with the order of the elements reversed.
 ```php
 new \Rudashi\Map(['pigs', 'goats', 'sheep'])->push('cows', 'cats');
 // [ 'pigs', 'goats', 'sheep', 'cows', 'cats' ]

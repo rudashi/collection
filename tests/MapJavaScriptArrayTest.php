@@ -339,6 +339,13 @@ class MapJavaScriptArrayTest extends TestCase
         self::assertEquals([1, 2, 3, 4, [5, 6]], $map->flat()->toArray());
     }
 
+    public function test_flat_mixed(): void
+    {
+        $map = new Map([['Wind', 'Water', ['Fire', null]], [1, 'a', true]]);
+
+        self::assertEquals(['Wind', 'Water', 'Fire', null, 1, 'a', true], $map->flat(INF)->toArray());
+    }
+
     public function test_flatMap(): void
     {
         $map = new Map([1, 2, 3, 4]);
@@ -435,10 +442,13 @@ class MapJavaScriptArrayTest extends TestCase
         self::assertInstanceOf(Map::class, $map);
         self::assertEquals(1, $map->indexOf('bison'));
         self::assertEquals(4, $map->indexOf('bison', 2));
+        self::assertEquals(-1, $map->indexOf('bison', 5));
+        self::assertEquals(1, $map->indexOf('bison', -4));
+        self::assertEquals(4, $map->indexOf('bison', -3));
         self::assertEquals(-1, $map->indexOf('giraffe'));
     }
 
-    public function test_indexIf_on_multidimensional_array(): void
+    public function test_indexOf_on_multidimensional_array(): void
     {
         $map = new Map(['ant', 'bison', 'pet' => 'camel', 'duck', 'bison']);
 
@@ -446,6 +456,80 @@ class MapJavaScriptArrayTest extends TestCase
         self::assertEquals(1, $map->indexOf('bison'));
         self::assertEquals('pet', $map->indexOf('camel'));
         self::assertEquals(2, $map->indexOf('duck'));
+    }
+
+    public function test_join(): void
+    {
+        $empty = new Map();
+        $one = new Map(['Wind']);
+        $map = new Map(['Wind', 'Water', 'Fire']);
+
+        self::assertEquals('', $empty->join());
+        self::assertEquals('Wind', $one->join());
+        self::assertEquals('Wind,Water,Fire', $map->join());
+        self::assertEquals('Wind, Water, Fire', $map->join(', '));
+        self::assertEquals('Wind + Water + Fire', $map->join(' + '));
+        self::assertEquals('WindWaterFire', $map->join(''));
+    }
+
+    public function test_join_null_and_empty_arrays(): void
+    {
+        $map = new Map(['Fire', [], 'Water', null]);
+
+        self::assertEquals('Fire,,Water,', $map->join());
+    }
+
+    public function test_join_nested_arrays(): void
+    {
+        $map = new Map([['Wind', 'Water', ['Fire', null]], [1, 'a', true]]);
+
+        self::assertEquals('Wind,Water,Fire,,1,a,true', $map->join());
+        self::assertEquals('Wind,Water,Fire,-1,a,true', $map->join('-'));
+    }
+
+    public function test_join_maps(): void
+    {
+        $map = new Map([new Map(['Wind', 'Water', 'Fire']), new Map([1, 'a', true])]);
+
+        self::assertEquals('Wind,Water,Fire,1,a,true', $map->join());
+        self::assertEquals('Wind,Water,Fire-1,a,true', $map->join('-'));
+    }
+
+    public function test_reverse(): void
+    {
+        $map = new Map(['one', 'two', 'three']);
+        $reversed = $map->reverse();
+
+        self::assertInstanceOf(Map::class, $reversed);
+        self::assertSame(['three', 'two', 'one'], $reversed->toArray());
+    }
+
+    public function test_reverse_with_keys(): void
+    {
+        $map = new Map(['one' => 1, 'two' => 2, 'three' => 3]);
+        $reversed = $map->reverse(true);
+
+        self::assertInstanceOf(Map::class, $reversed);
+        self::assertSame(['three' => 3, 'two' => 2, 'one' => 1], $reversed->toArray());
+    }
+
+    public function test_lastIndexOf(): void
+    {
+        $map = new Map([2, 5, 9, 2]);
+
+        self::assertInstanceOf(Map::class, $map);
+        self::assertEquals(3, $map->lastIndexOf(2));
+        self::assertEquals(-1, $map->lastIndexOf(7));
+    }
+
+    public function test_lastIndexOf_on_multidimensional_array(): void
+    {
+        $map = new Map(['ant', 'bison', 'pet' => 'camel', 'duck', 'bison']);
+
+        self::assertInstanceOf(Map::class, $map);
+        self::assertEquals(3, $map->lastIndexOf('bison'));
+        self::assertEquals('pet', $map->lastIndexOf('camel'));
+        self::assertEquals(2, $map->lastIndexOf('duck'));
     }
 
 }
