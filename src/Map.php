@@ -407,6 +407,7 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
      * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/lastIndexOf
      *
      * @param mixed $searchElement
+     * @param int|null $fromIndex
      * @return int|string
      */
     public function lastIndexOf($searchElement)
@@ -453,6 +454,17 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
     }
 
     /**
+     * Removes the last element and returns that element.
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/pop
+     *
+     * @return mixed
+     */
+    public function pop()
+    {
+        return array_pop($this->items);
+    }
+
+    /**
      * Push one or more items onto the end of the collection.
      * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push
      *
@@ -469,6 +481,32 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
     }
 
     /**
+     * Execute a callback over each item reducing to a single value.
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce
+     *
+     * @param callable $callback
+     * @param mixed $initialValue
+     * @return mixed
+     */
+    public function reduce(callable $callback, $initialValue = null)
+    {
+        return array_reduce($this->items, $callback, $initialValue);
+    }
+
+    /**
+     * Execute a callback over each item (from right-to-left) reducing to a single value.
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight
+     *
+     * @param callable $callback
+     * @param mixed $initialValue
+     * @return mixed
+     */
+    public function reduceRight(callable $callback, $initialValue = null)
+    {
+        return array_reduce(array_reverse($this->items), $callback, $initialValue);
+    }
+
+    /**
      * Returns a new instance with the order of the elements reversed.
      * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reverse
      *
@@ -478,6 +516,40 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
     public function reverse(bool $preserve_keys = false): self
     {
         return new static(array_reverse($this->items, $preserve_keys));
+    }
+
+    /**
+     * Removes the first element and returns that element.
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/shift
+     *
+     * @return mixed
+     */
+    public function shift()
+    {
+        return array_shift($this->items);
+    }
+
+    /**
+     * Returns a new instance with portion of items between $start and $end.
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
+     *
+     * @param int $start
+     * @param int|null $end
+     * @return static
+     */
+    public function slice(int $start, int $end = null): self
+    {
+        if ($start === $end) {
+            return new static();
+        }
+
+        $length = $this->count() - 1;
+
+        if ($end >= $length) {
+            $end = $end === $length ? -1 : null;
+        }
+
+        return new static(array_slice($this->items, $start, $end, true));
     }
 
     /**

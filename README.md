@@ -42,6 +42,9 @@ composer require rudashi/collection
 * [isArray()](#isarray)
 * [keys()](#keys)
 * [lastIndexOf()](#lastindexof)
+* [reduce()](#reduce)
+* [reduceRight()](#reduceright)
+* [slice()](#slice)
 * [toArray()](#toarray)
 * [values()](#values)
 
@@ -54,14 +57,17 @@ composer require rudashi/collection
 * [flatMap()](#flatmap)
 * [join()](#join)
 * [map()](#map)
+* [pop()](#pop)
 * [push()](#push)
 * [reverse()](#reverse)
+* [shift()](#shift)
 
 ### Available Methods
 
 * [all()](#all)
 * [concat()](#concat)
 * [copyWithin()](#copywithin)
+* [count()](#count)
 * [entries()](#entries)
 * [every()](#every)
 * [fill()](#fill)
@@ -80,11 +86,15 @@ composer require rudashi/collection
 * [lastIndexOf()](#lastindexof)
 * [of()](#of)
 * [map()](#map)
-* [reverse()](#reverse)
-* [values()](#values)
-* [toArray()](#toarray)
-* [count()](#count)
+* [pop()](#pop)
 * [push()](#push)
+* [reduce()](#reduce)
+* [reduceRight()](#reduceright)
+* [reverse()](#reverse)
+* [shift()](#shift)
+* [slice()](#slice)
+* [toArray()](#toarray)
+* [values()](#values)
 
 ## Documentation
 
@@ -261,17 +271,47 @@ new \Rudashi\Map([1, 4, 9, 16])->map(function ($item, $key) {
 ```php
 new \Rudashi\Map::of([[1, 2], [2, 4], [4, 8]]);
 ```
+### pop()
+Removes the last element and returns that element.
+```php
+new \Rudashi\Map(['a', 'b', 'c'])->pop();
+// 'c'
+```
 ### push()
 Method adds one or more elements to the end.
 ```php
 new \Rudashi\Map(['pigs', 'goats', 'sheep'])->push('cows', 'cats');
 // [ 'pigs', 'goats', 'sheep', 'cows', 'cats' ]
 ```
+### reduce()
+Execute a callback over each item reducing to a single value.
+```php
+new \Rudashi\Map(['1', '2', '3', '4', '5'])->reduce(fn($prev, $curr) => $prev + $curr);
+// '12345'
+```
+### reduceRight()
+Execute a callback over each item (from right-to-left) reducing to a single value.
+```php
+new \Rudashi\Map(['1', '2', '3', '4', '5'])->reduce(fn($prev, $curr) => $prev + $curr);
+// '54321'
+```
 ### reverse()
 Returns a new instance with the order of the elements reversed.
 ```php
 new \Rudashi\Map(['pigs', 'goats', 'sheep'])->push('cows', 'cats');
 // [ 'pigs', 'goats', 'sheep', 'cows', 'cats' ]
+```
+### shift()
+Removes the first element and returns that element.
+```php
+new \Rudashi\Map(['a', 'b', 'c'])->shift();
+// 'a'
+```
+### slice()
+Returns a new instance with portion of items.
+```php
+new \Rudashi\Map(['Banana', 'Orange', 'Lemon', 'Apple', 'Mango'])->slice(1, 3);
+// ['Orange','Lemon']
 ```
 ### toArray()
 Returns all the items as plain array.

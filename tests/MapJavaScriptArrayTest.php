@@ -287,7 +287,7 @@ class MapJavaScriptArrayTest extends TestCase
     {
         $map = new Map([1, 2, 3, 4]);
 
-        $this->assertNull($map->find(fn($value) => $value === 5));
+        self::assertNull($map->find(fn($value) => $value === 5));
     }
 
     public function test_findIndex(): void
@@ -301,7 +301,7 @@ class MapJavaScriptArrayTest extends TestCase
     {
         $map = new Map([1, 2, 3, 4]);
 
-        $this->assertNull($map->findIndex(fn($value) => $value === 5));
+        self::assertNull($map->findIndex(fn($value) => $value === 5));
     }
 
     public function test_flat(): void
@@ -530,6 +530,152 @@ class MapJavaScriptArrayTest extends TestCase
         self::assertEquals(3, $map->lastIndexOf('bison'));
         self::assertEquals('pet', $map->lastIndexOf('camel'));
         self::assertEquals(2, $map->lastIndexOf('duck'));
+    }
+
+    public function test_pop(): void
+    {
+        $map = new Map(['angel', 'clown', 'mandarin', 'sturgeon']);
+        $popped = $map->pop();
+
+        self::assertInstanceOf(Map::class, $map);
+        self::assertEquals(['angel', 'clown', 'mandarin'], $map->toArray());
+        self::assertEquals('sturgeon', $popped);
+    }
+
+    public function test_reduce(): void
+    {
+        $map = new Map([0, 1, 2, 3]);
+        $sum = $map->reduce(function($previousValue, $currentValue) {
+            return $previousValue + $currentValue;
+        }, 0);
+
+        self::assertInstanceOf(Map::class, $map);
+        self::assertIsInt($sum);
+        self::assertEquals(6, $sum);
+    }
+
+    public function test_reduce_flatten(): void
+    {
+        $map = new Map([new Map([0, 1]), new Map([2, 3]), new Map([4, 5])]);
+        $flattened = $map->reduce(function(Map $previousValue, Map $currentValue) {
+            return $previousValue->concat($currentValue);
+        }, new Map());
+
+        self::assertInstanceOf(Map::class, $flattened);
+        self::assertEquals([0, 1, 2, 3, 4, 5], $flattened->toArray());
+    }
+
+    public function test_reduce_counting_instances_of_values(): void
+    {
+        $map = new Map(['Alice', 'Bob', 'Tiff', 'Bruce', 'Alice']);
+        $countedNames = $map->reduce(function($allNames, $name) {
+            if (isset($allNames[$name])) {
+                $allNames[$name]++;
+            } else {
+                $allNames[$name] = 1;
+            }
+            return $allNames;
+        }, []);
+
+        self::assertInstanceOf(Map::class, $map);
+        self::assertIsArray($countedNames);
+        self::assertEquals(['Alice' => 2, 'Bob' => 1, 'Tiff' => 1, 'Bruce' => 1], $countedNames);
+    }
+
+    public function test_reduce_group_by(): void
+    {
+        $map = new Map([
+            new Map(['name' => 'Alice', 'age' => 21]),
+            new Map(['name' => 'Max', 'age' => 20]),
+            new Map(['name' => 'Jane', 'age' => 20]),
+        ]);
+
+        $property = 'age';
+        $groupedPeople = $map->reduce(function(Map $acc, Map $obj) use ($property) {
+            $key = $obj->offsetGet($property);
+
+            if (!$acc->offsetExists($key)) {
+                $acc->offsetSet($key, new Map());
+            }
+            $acc->offsetGet($key)->push($obj);
+
+            return $acc;
+        }, new Map());
+
+        self::assertInstanceOf(Map::class, $groupedPeople);
+        self::assertInstanceOf(Map::class, $groupedPeople->get(20));
+        self::assertInstanceOf(Map::class, $groupedPeople->get(20)->first());
+        self::assertEquals([
+            20 => [['name' => 'Max', 'age' => 20], ['name' => 'Jane', 'age' => 20]],
+            21 => [['name' => 'Alice', 'age' => 21]]
+        ], $groupedPeople->toArray());
+    }
+
+    public function test_reduce_remove_duplicate_items(): void
+    {
+        $map = new Map(['a', 'b', 'a', 'b', 'c', 'e', 'e', 'c', 'd', 'd', 'd', 'd']);
+        $myArrayWithNoDuplicates = $map->reduce(function (array $previousValue, string $currentValue) {
+            if (!in_array($currentValue, $previousValue, true)) {
+                $previousValue[] = $currentValue;
+            }
+            return $previousValue;
+        }, []);
+
+        self::assertInstanceOf(Map::class, $map);
+        self::assertEquals(['a', 'b', 'c', 'e', 'd'], $myArrayWithNoDuplicates);
+    }
+
+    public function test_reduceRight(): void
+    {
+        $map = new Map([0, 1, 2, 3]);
+        $sum = $map->reduceRight(fn($a, $b) => $a + $b);
+
+        self::assertInstanceOf(Map::class, $map);
+        self::assertIsInt($sum);
+        self::assertEquals(6, $sum);
+    }
+
+    public function test_reduceRight_flatten(): void
+    {
+        $map = new Map([new Map([0, 1]), new Map([2, 3]), new Map([4, 5])]);
+        $flattened = $map->reduceRight(function(Map $a, Map $b) {
+            return $a->concat($b);
+        }, new Map());
+
+        self::assertInstanceOf(Map::class, $flattened);
+        self::assertEquals([4, 5, 2, 3, 0, 1], $flattened->toArray());
+    }
+
+    public function test_reduceRight_concat_string(): void
+    {
+        $map = new Map(['1', '2', '3', '4', '5']);
+        $right = $map->reduceRight(fn($prev, $curr) => $prev . $curr);
+
+        self::assertInstanceOf(Map::class, $map);
+        self::assertEquals('54321', $right);
+    }
+
+    public function test_shift(): void
+    {
+        $map = new Map(['angel', 'clown', 'mandarin', 'surgeon']);
+        $shifted = $map->shift();
+
+        self::assertInstanceOf(Map::class, $map);
+        self::assertEquals(['clown', 'mandarin', 'surgeon'], $map->toArray());
+        self::assertEquals('angel', $shifted);
+    }
+
+    public function test_slice(): void
+    {
+        $map = new Map(['ant', 'bison', 'camel', 'duck', 'elephant']);
+
+        self::assertEquals([2 => 'camel', 3 => 'duck', 4 => 'elephant'], $map->slice(2)->toArray());
+        self::assertEquals([], $map->slice(2, 2)->toArray());
+        self::assertEquals([2 => 'camel', 3 => 'duck'], $map->slice(2, 4)->toArray());
+        self::assertEquals([1 => 'bison', 2 =>'camel', 3 => 'duck', 4 => 'elephant'], $map->slice(1, 5)->toArray());
+        self::assertEquals([1 => 'bison', 2 =>'camel', 3 => 'duck'], $map->slice(1, 4)->toArray());
+        self::assertEquals([3 => 'duck', 4 => 'elephant'], $map->slice(-2)->toArray());
+        self::assertEquals([2 =>'camel', 3 => 'duck'], $map->slice(2, -1)->toArray());
     }
 
 }
