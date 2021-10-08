@@ -608,7 +608,7 @@ class MapJavaScriptArrayTest extends TestCase
 
         self::assertInstanceOf(Map::class, $groupedPeople);
         self::assertInstanceOf(Map::class, $groupedPeople->get(20));
-        self::assertInstanceOf(Map::class, $groupedPeople->get(20)->first());
+        self::assertInstanceOf(Map::class, $groupedPeople->get(20)->get(0));
         self::assertEquals([
             20 => [['name' => 'Max', 'age' => 20], ['name' => 'Jane', 'age' => 20]],
             21 => [['name' => 'Alice', 'age' => 21]]
