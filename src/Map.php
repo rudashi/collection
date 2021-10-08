@@ -14,12 +14,12 @@ use TypeError;
 
 /**
  * @property int $length
+ * @property int $size
  */
 class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterface
 {
     use Arrayable;
 
-    private ?int $length = null;
     protected array $items = [];
 
     public function __construct($items = [])
@@ -97,6 +97,19 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
         }
 
         return null;
+    }
+
+    /**
+     * Removes all elements.
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/clear
+     *
+     * @return static
+     */
+    public function clear(): self
+    {
+        $this->items = [];
+
+        return $this;
     }
 
     /**
@@ -722,7 +735,7 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
      */
     public function __get(string $name)
     {
-        if ($name === 'length') {
+        if ($name === 'length' || $name === 'size') {
             return $this->count();
         }
         throw new Exception("Property [$name] does not exist on this collection instance.");
