@@ -30,6 +30,7 @@ composer require rudashi/collection
 
 * [@property length](#length)
 * [all()](#all)
+* [at()](#at)
 * [count()](#count)
 * [entries()](#entries)
 * [every()](#every)
@@ -45,7 +46,10 @@ composer require rudashi/collection
 * [reduce()](#reduce)
 * [reduceRight()](#reduceright)
 * [slice()](#slice)
+* [some()](#some)
+* [sort()](#sort)
 * [toArray()](#toarray)
+* [toString()](#tostring)
 * [values()](#values)
 
 ### Mutation
@@ -61,10 +65,13 @@ composer require rudashi/collection
 * [push()](#push)
 * [reverse()](#reverse)
 * [shift()](#shift)
+* [splice()](#splice)
+* [unshift()](#unshift)
 
 ### Available Methods
 
 * [all()](#all)
+* [at()](#at)
 * [concat()](#concat)
 * [copyWithin()](#copywithin)
 * [count()](#count)
@@ -93,7 +100,12 @@ composer require rudashi/collection
 * [reverse()](#reverse)
 * [shift()](#shift)
 * [slice()](#slice)
+* [some()](#some)
+* [sort()](#sort)
+* [splice()](#splice)
 * [toArray()](#toarray)
+* [toString()](#tostring)
+* [unshift()](#unshift)
 * [values()](#values)
 
 ## Documentation
@@ -116,6 +128,12 @@ Returns all the items in the collection.
 ```php
 new \Rudashi\Map([1, 2, 3])->all();
 // [ 1, 2, 3 ]
+```
+### at()
+Returns item at index.
+```php
+new \Rudashi\Map([1, 2, 3])->at(-1);
+// 3
 ```
 ### concat()
 Returns a new instance with merged values.
@@ -313,11 +331,37 @@ Returns a new instance with portion of items.
 new \Rudashi\Map(['Banana', 'Orange', 'Lemon', 'Apple', 'Mango'])->slice(1, 3);
 // ['Orange','Lemon']
 ```
+### some()
+Method tests whether at least one element passes the test.
+```php
+new \Rudashi\Map([1, 2, 3])->some(fn($element) => $element % 2 === 0);
+// true
+```
+### sort()
+Returns a new sorted instance.
+```php
+new \Rudashi\Map([-1, 4, 2, 0, 5, 1, 3, -2])->sort();
+// [-2, -1, 0, 1, 2, 3, 4, 5]
+```
+### splice()
+Modifies instance and returns a new instance with existing elements removed or replaced.
+```php
+new \Rudashi\Map(['Jan', 'March', 'April', 'June'])->splice(1, 0, 'Feb');
+// ['Jan', 'Feb', 'March', 'April', 'June']
+```
 ### toArray()
 Returns all the items as plain array.
 ```php
 new \Rudashi\Map([1, 2, 3])->toArray();
 // [ 1, 2, 3 ]
+```
+### toString()
+Alias for the [join()](#join) method.
+### unshift()
+Adds one or more elements to the beginning and returns the new instance.
+```php
+new \Rudashi\Map(['a', 'b', 'c'])->unshift(1);
+// [1, 'a', 'b', 'c']
 ```
 ### values()
 Returns a new instance that contains the values with reset keys.

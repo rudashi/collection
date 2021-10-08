@@ -74,10 +74,36 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
     }
 
     /**
+     * Returns item at index.
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/at
+     *
+     * @param int $index
+     * @return mixed
+     */
+    public function at(int $index)
+    {
+        $length = $this->count();
+
+        if ($length === 0 || abs($index) > $length) {
+            return null;
+        }
+
+        $index = $index < 0 ? $length + $index : $index;
+
+        foreach ($this->items as $key => $value) {
+            if ($key === $index) {
+                return $value;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Merge two or more arrays to new instance.
      * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/concat
      *
-     * @param mixed $elements
+     * @param mixed ...$elements
      * @return static
      */
     public function concat(...$elements): self
@@ -451,7 +477,7 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
      * Creates a new map instance from arguments.
      * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/of
      *
-     * @param mixed $items
+     * @param mixed ...$items
      * @return static
      */
     public static function of(...$items): self
@@ -474,7 +500,7 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
      * Push one or more items onto the end of the collection.
      * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/push
      *
-     * @param  mixed $elements
+     * @param  mixed ...$elements
      * @return static
      */
     public function push(...$elements): self
@@ -556,6 +582,84 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
         }
 
         return new static(array_slice($this->items, $start, $end, true));
+    }
+
+    /**
+     * Method tests whether at least one element passes the test.
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some
+     *
+     * @param callable $callback
+     * @return bool
+     */
+    public function some(callable $callback): bool
+    {
+        foreach($this->items as $key => $item) {
+            if ($callback($item, $key)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns a new sorted instance.
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
+     *
+     * @param callable|int|null $callback
+     * @return static
+     */
+    public function sort($callback = null): self
+    {
+        $items = $this->items;
+
+        $callback && is_callable($callback)
+            ? usort($items, $callback)
+            : sort($items, $callback ?? SORT_REGULAR);
+
+        return new static($items);
+    }
+
+    /**
+     * Modifies instance and returns a new instance with existing elements removed or replaced.
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice
+     *
+     * @param int $start
+     * @param int|null $deleteCount
+     * @param mixed ...$item
+     * @return static
+     */
+    public function splice(int $start, int $deleteCount = null, ...$item): self
+    {
+        if ($deleteCount === null) {
+            return new static(array_splice($this->items, $start));
+        }
+
+        return new static(array_splice($this->items, $start, $deleteCount, $item));
+    }
+
+    /**
+     * Returns a string representing the instance.
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/toString
+     *
+     * @return string
+     */
+    public function toString(): string
+    {
+        return $this->join();
+    }
+
+    /**
+     * Adds one or more elements to the beginning and returns the new instance.
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/unshift
+     *
+     * @param mixed ...$item
+     * @return static
+     */
+    public function unshift(...$item): self
+    {
+        array_unshift($this->items, ...$item);
+
+        return $this;
     }
 
     /**

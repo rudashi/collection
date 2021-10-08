@@ -682,4 +682,139 @@ class MapJavaScriptArrayTest extends TestCase
         self::assertEquals([2 =>'camel', 3 => 'duck'], $map->slice(2, -1)->toArray());
     }
 
+    public function test_some(): void
+    {
+        $isBiggerThan10 = static function($element) {
+            return $element > 10;
+        };
+
+        self::assertFalse(Map::from([2, 5, 8, 1, 4])->some($isBiggerThan10));
+        self::assertTrue(Map::from([12, 5, 8, 1, 4])->some($isBiggerThan10));
+    }
+
+    public function test_sort(): void
+    {
+        $map = (new Map([-1, 4, 2, 0, 5, 1, 3, -2]))->sort();
+
+        self::assertInstanceOf(Map::class, $map);
+        self::assertEquals([-2, -1, 0, 1, 2, 3, 4, 5], $map->toArray());
+    }
+
+    public function test_sort_with_callback(): void
+    {
+        $map = (new Map([
+            ['name' => 'Alex',   'grade' => 15],
+            ['name' => 'Devlin', 'grade' => 15],
+            ['name' => 'Eagle',  'grade' => 13],
+            ['name' => 'Sam',    'grade' => 14],
+        ]))->sort(function($first, $second) {
+            return $first['grade'] - $second['grade'];
+        });
+
+        self::assertInstanceOf(Map::class, $map);
+        self::assertEquals([
+            ['name' => 'Eagle',  'grade' => 13],
+            ['name' => 'Sam',    'grade' => 14],
+            ['name' => 'Alex',   'grade' => 15],
+            ['name' => 'Devlin', 'grade' => 15],
+        ], $map->toArray());
+    }
+
+    public function test_splice(): void
+    {
+        $map = new Map(['angel', 'clown', 'mandarin', 'sturgeon']);
+        $removed = $map->splice(2);
+
+        self::assertInstanceOf(Map::class, $removed);
+        self::assertEquals(['angel', 'clown'], $map->toArray());
+        self::assertEquals(['mandarin', 'sturgeon'], $removed->toArray());
+    }
+
+    public function test_splice_with_delete_count(): void
+    {
+        $map = new Map(['parrot', 'anemone', 'blue', 'trumpet', 'sturgeon']);
+        $removed = $map->splice(2, 2);
+
+        self::assertInstanceOf(Map::class, $removed);
+        self::assertEquals(['parrot', 'anemone', 'sturgeon'], $map->toArray());
+        self::assertEquals(['blue', 'trumpet'], $removed->toArray());
+    }
+
+    public function test_splice_with_negative_delete_count(): void
+    {
+        $map = new Map(['angel', 'clown', 'mandarin', 'sturgeon']);
+        $removed = $map->splice(-2, 1);
+
+        self::assertInstanceOf(Map::class, $removed);
+        self::assertEquals(['angel', 'clown', 'sturgeon'], $map->toArray());
+        self::assertEquals(['mandarin'], $removed->toArray());
+    }
+
+    public function test_splice_with_delete_count_and_replacements(): void
+    {
+        $map = new Map(['angel', 'clown', 'trumpet', 'sturgeon']);
+        $removed = $map->splice(0, 2, 'parrot', 'anemone', 'blue');
+
+        self::assertInstanceOf(Map::class, $removed);
+        self::assertEquals(['parrot', 'anemone', 'blue', 'trumpet', 'sturgeon'], $map->toArray());
+        self::assertEquals(['angel', 'clown'], $removed->toArray());
+    }
+
+    public function test_splice_with_replacements_and_without_removing(): void
+    {
+        $map = new Map(['angel', 'clown', 'mandarin', 'sturgeon']);
+        $removed = $map->splice(2, 0, 'drum', 'guitar');
+
+        self::assertInstanceOf(Map::class, $removed);
+        self::assertEquals(['angel', 'clown', 'drum', 'guitar', 'mandarin', 'sturgeon'], $map->toArray());
+        self::assertEquals([], $removed->toArray());
+    }
+
+    public function test_toString(): void
+    {
+        $map = new Map([1, 2, 'a', '1a']);
+
+        self::assertInstanceOf(Map::class, $map);
+        self::assertEquals('1,2,a,1a', $map->toString());
+    }
+
+    public function test_unshift(): void
+    {
+        $map = new Map([4, 5, 6]);
+        $map->unshift(1, 2, 3);
+
+        self::assertInstanceOf(Map::class, $map);
+        self::assertEquals([1, 2, 3, 4, 5, 6], $map->toArray());
+    }
+
+    public function test_unshift_multiple_time(): void
+    {
+        $map = new Map([4, 5, 6]);
+        $map->unshift(1);
+        $map->unshift(2);
+        $map->unshift(3);
+
+        self::assertInstanceOf(Map::class, $map);
+        self::assertEquals([3, 2, 1, 4, 5, 6], $map->toArray());
+    }
+
+    public function test_unshift_nested_array(): void
+    {
+        $map = new Map([0, 1, 2]);
+        $map->unshift([-4, -3]);
+
+        self::assertInstanceOf(Map::class, $map);
+        self::assertEquals([[-4, -3], 0, 1, 2], $map->toArray());
+    }
+
+    public function test_at(): void
+    {
+        $map = new Map(['apple', 'banana', 'pear']);
+
+        self::assertInstanceOf(Map::class, $map);
+        self::assertEquals(null, $map->at(-4));
+        self::assertEquals('pear', $map->at(-1));
+        self::assertEquals('banana', $map->at(1));
+    }
+
 }
