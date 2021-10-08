@@ -24,4 +24,21 @@ class MapTest extends TestCase
         self::assertEquals(['name' => 'Hello', 'map' => ['test' => []]], (new Map($array2))->toArray());
     }
 
+    public function test_get(): void
+    {
+        $map = new Map(['first' => 'apple', 'second' => 'banana', 'third' => 'grapes']);
+
+        self::assertEquals('banana', $map->get('second'));
+        self::assertNull($map->get('fake'));
+        self::assertEquals('something', $map->get('fake', 'something'));
+    }
+
+    public function test_set(): void
+    {
+        $map = new Map(['first' => 'apple', 'third' => 'grapes']);
+
+        self::assertInstanceOf(Map::class, $map->set('second', 'banana'));
+        self::assertEquals(['first' => 'apple', 'third' => 'grapes', 'second' => 'banana'], $map->toArray());
+    }
+
 }
