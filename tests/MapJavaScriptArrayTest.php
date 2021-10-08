@@ -520,6 +520,10 @@ class MapJavaScriptArrayTest extends TestCase
         self::assertInstanceOf(Map::class, $map);
         self::assertEquals(3, $map->lastIndexOf(2));
         self::assertEquals(-1, $map->lastIndexOf(7));
+        self::assertEquals(3, $map->lastIndexOf(2, 3));
+        self::assertEquals(0, $map->lastIndexOf(2, 2));
+        self::assertEquals(0, $map->lastIndexOf(2, -2));
+        self::assertEquals(3, $map->lastIndexOf(2, -1));
     }
 
     public function test_lastIndexOf_on_multidimensional_array(): void

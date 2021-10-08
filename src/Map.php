@@ -410,7 +410,7 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
      * @param int|null $fromIndex
      * @return int|string
      */
-    public function lastIndexOf($searchElement)
+    public function lastIndexOf($searchElement, int $fromIndex = null)
     {
         $length = $this->count();
 
@@ -418,7 +418,13 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
             return -1;
         }
 
-        foreach (array_reverse($this->items, true) as $index => $value) {
+        $array = $this->items;
+
+        if (null !== $fromIndex && $fromIndex !== -1 && $fromIndex < $length - 1) {
+            $array = array_slice($array, 0, -$fromIndex + 1);
+        }
+
+        foreach (array_reverse($array, true) as $index => $value) {
             if ($value === $searchElement) {
                 return $index;
             }
