@@ -8,6 +8,7 @@ use JsonException;
 use Rudashi\Contracts\ArrayInterface;
 use Rudashi\Contracts\EnumeratedInterface;
 use Rudashi\Contracts\JavaScriptArrayInterface;
+use Rudashi\Contracts\JavaScriptMapInterface;
 use Rudashi\Traits\Arrayable;
 use Traversable;
 use TypeError;
@@ -16,7 +17,7 @@ use TypeError;
  * @property int $length
  * @property int $size
  */
-class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterface
+class Map implements JavaScriptArrayInterface, JavaScriptMapInterface, EnumeratedInterface, ArrayInterface
 {
     use Arrayable;
 
@@ -174,6 +175,34 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
     }
 
     /**
+     * Removes the specified element.
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/delete
+     *
+     * @param mixed $key
+     * @return bool
+     */
+    public function delete($key): bool
+    {
+        if ($this->has($key)) {
+            $this->offsetUnset($key);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Returns a boolean indicating whether an element with the specified key exists or not.
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/has
+     *
+     * @param mixed $key
+     * @return bool
+     */
+    public function has($key): bool
+    {
+        return $this->offsetExists($key);
+    }
+
+    /**
      * Determines whether it contains the given element.
      * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes
      *
@@ -218,6 +247,7 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
     /**
      * Returns an array that contains the key/value pairs.
      * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/entries
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/entries
      *
      * @return array
      */
@@ -293,11 +323,11 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
      * If no values satisfy the testing function, $default is returned.
      * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find
      *
-     * @param Closure $callback
+     * @param callable $callback
      * @param mixed $default
      * @return mixed
      */
-    public function find(Closure $callback, $default = null)
+    public function find(callable $callback, $default = null)
     {
         foreach ($this->items as $key => $value) {
             if ($callback($value, $key)) {
@@ -313,10 +343,10 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
      * If no values satisfy the testing function, null is returned.
      * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex
      *
-     * @param Closure $callback
+     * @param callable $callback
      * @return int|string|null
      */
-    public function findIndex(Closure $callback)
+    public function findIndex(callable $callback)
     {
         foreach ($this->items as $key => $value) {
             if ($callback($value, $key)) {
@@ -353,6 +383,7 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
     /**
      * Execute a callback over each item.
      * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/forEach
      *
      * @param callable $callback
      * @return static
@@ -366,6 +397,23 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
         }
 
         return $this;
+    }
+
+    /**
+     * Returns a specified element by a key.
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/get
+     *
+     * @param mixed $key
+     * @param callback|null $default
+     * @return mixed
+     */
+    public function get($key, $default = null)
+    {
+        if ($this->offsetExists($key)) {
+            return $this->items[$key];
+        }
+
+        return $default instanceof Closure ? $default() : $default;
     }
 
     /**
@@ -432,6 +480,7 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
     /**
      * Returns a new instance that contains the keys.
      * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/keys
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/keys
      *
      * @return static
      */
@@ -564,6 +613,21 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
     }
 
     /**
+     * Adds or updates an element with a specified key and a value.
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/set
+     *
+     * @param mixed $key
+     * @param mixed $value
+     * @return static
+     */
+    public function set($key, $value = null): self
+    {
+        $this->items[$key] = $value;
+
+        return $this;
+    }
+
+    /**
      * Removes the first element and returns that element.
      * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/shift
      *
@@ -678,6 +742,7 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
     /**
      * Returns a new instance that contains the values with reset keys.
      * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/values
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/values
      *
      * @return static
      */
@@ -689,22 +754,6 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
     public function all(): array
     {
         return $this->items;
-    }
-
-    public function get($key, $default = null)
-    {
-        if (array_key_exists($key, $this->items)) {
-            return $this->items[$key];
-        }
-
-        return $default instanceof Closure ? $default() : $default;
-    }
-
-    public function set($key, $value): self
-    {
-        $this->items[$key] = $value;
-
-        return $this;
     }
 
     /**
@@ -723,6 +772,15 @@ class Map implements JavaScriptArrayInterface, EnumeratedInterface, ArrayInterfa
         return $this->map(function ($value) {
             return $value instanceof ArrayInterface ? $value->toArray() : $value;
         })->all();
+    }
+
+    public function __toString(): ?string
+    {
+        try {
+            return json_encode($this->toArray(), JSON_THROW_ON_ERROR);
+        } catch (JsonException $e) {
+            return null;
+        }
     }
 
     /**

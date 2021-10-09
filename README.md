@@ -4,6 +4,9 @@ Easy and elegant wrapper for PHP arrays.
 
 # Table of Contents
 - [Installation](#installation)
+- [Styles](#styles)
+  - [JavaScript Array](#javascript-array)
+  - [JavaScript Map](#javascript-map)
 - [Basic Usage](#basic-usage)
   - [Create](#create)
   - [Access](#access)
@@ -16,9 +19,58 @@ Easy and elegant wrapper for PHP arrays.
 ```bash
 composer require rudashi/collection
 ```
+## Styles
+
+### JavaScript Array
+* [@property length](#length)
+* [at()](#at)
+* [concat()](#concat)
+* [copyWithin()](#copywithin)
+* [entries()](#entries)
+* [every()](#every)
+* [fill()](#fill)
+* [filter()](#filter)
+* [find()](#find)
+* [findIndex()](#findindex)
+* [flat()](#flat)
+* [flatMap()](#flatmap)
+* [forEach()](#foreach)
+* [from()](#from)
+* [includes()](#includes)
+* [indexOf()](#indexof)
+* [isArray()](#isarray)
+* [join()](#join)
+* [keys()](#keys)
+* [lastIndexOf()](#lastindexof)
+* [map()](#map)
+* [of()](#of)
+* [pop()](#pop)
+* [push()](#push)
+* [reduce()](#reduce)
+* [reduceRight()](#reduceright)
+* [reverse()](#reverse)
+* [shift()](#shift)
+* [slice()](#slice)
+* [some()](#some)
+* [sort()](#sort)
+* [splice()](#splice)
+* [toString()](#tostring)
+* [unshift()](#unshift)
+* [values()](#values)
+
+### JavaScript Map
+* [@property size](#size)
+* [clear()](#clear)
+* [delete()](#delete)
+* [entries()](#entries)
+* [forEach()](#foreach)
+* [get()](#get)
+* [has()](#has)
+* [keys()](#keys)
+* [set()](#set)
+* [values()](#values)
 
 ## Basic Usage
-
 ### Create
 
 * [function map()](#map-function)
@@ -27,7 +79,6 @@ composer require rudashi/collection
 * [of()](#of)
 
 ### Access
-
 * [@property length](#length)
 * [all()](#all)
 * [at()](#at)
@@ -38,6 +89,8 @@ composer require rudashi/collection
 * [find()](#find)
 * [findIndex()](#findindex)
 * [forEach()](#foreach)
+* [get()](#get)
+* [has()](#has)
 * [includes()](#includes)
 * [indexOf()](#indexof)
 * [isArray()](#isarray)
@@ -53,9 +106,10 @@ composer require rudashi/collection
 * [values()](#values)
 
 ### Mutation
-
+* [clear()](#clear)
 * [concat()](#concat)
 * [copyWithin()](#copywithin)
+* [delete()](#delete)
 * [fill()](#fill)
 * [flat()](#flat)
 * [flatMap()](#flatmap)
@@ -64,14 +118,15 @@ composer require rudashi/collection
 * [pop()](#pop)
 * [push()](#push)
 * [reverse()](#reverse)
+* [set()](#set)
 * [shift()](#shift)
 * [splice()](#splice)
 * [unshift()](#unshift)
 
 ### Available Methods
-
 * [all()](#all)
 * [at()](#at)
+* [clear()](#clear)
 * [concat()](#concat)
 * [copyWithin()](#copywithin)
 * [count()](#count)
@@ -85,19 +140,21 @@ composer require rudashi/collection
 * [flatMap()](#flatmap)
 * [forEach()](#foreach)
 * [from()](#from)
+* [has()](#has)
 * [includes()](#includes)
 * [indexOf()](#indexof)
 * [isArray()](#isarray)
 * [join()](#join)
 * [keys()](#keys)
 * [lastIndexOf()](#lastindexof)
-* [of()](#of)
 * [map()](#map)
+* [of()](#of)
 * [pop()](#pop)
 * [push()](#push)
 * [reduce()](#reduce)
 * [reduceRight()](#reduceright)
 * [reverse()](#reverse)
+* [set()](#set)
 * [shift()](#shift)
 * [slice()](#slice)
 * [some()](#some)
@@ -122,6 +179,8 @@ new \Rudashi\Map([[1, 2], [2, 4], [4, 8]]);
 
 ### length
 Alias for the [count()](#count) method.
+### size
+Alias for the [count()](#count) method.
 
 ### all()
 Returns all the items in the collection.
@@ -134,6 +193,12 @@ Returns item at index.
 ```php
 new \Rudashi\Map([1, 2, 3])->at(-1);
 // 3
+```
+### clear()
+Removes all elements.
+```php
+new \Rudashi\Map(['foo' => 'bar'])->clear();
+// []
 ```
 ### concat()
 Returns a new instance with merged values.
@@ -152,6 +217,12 @@ Returns the number of elements.
 ```php
 new \Rudashi\Map(['a', 'b', 'c'])->count();
 // 3
+```
+### delete()
+Removes the specified element.
+```php
+new \Rudashi\Map(['foo' => 'bar', 'bar' => 'baz'])->delete('bar');
+// true
 ```
 ### entries()
 Alias for the [toArray()](#toarray) method.
@@ -241,6 +312,18 @@ $mapper = new \Rudashi\Map([['1', 'a'], ['2', 'b']]);
 \Rudashi\Map::from('{"a": "b"}')
 // [ 'a' => 'b' ]
 ```
+### get()
+Returns a specified element by a key.
+```php
+new \Rudashi\Map([1 => 'a', 4 => 'a'])->get(4);
+// 'a'
+```
+### has()
+Determines whether it contains the given element.
+```php
+new \Rudashi\Map([1 => 'a', 4 => 'a'])->has(4);
+// true
+```
 ### includes()
 Determines whether it contains the given element.
 ```php
@@ -318,6 +401,12 @@ Returns a new instance with the order of the elements reversed.
 ```php
 new \Rudashi\Map(['pigs', 'goats', 'sheep'])->push('cows', 'cats');
 // [ 'pigs', 'goats', 'sheep', 'cows', 'cats' ]
+```
+### set()
+Adds or updates an element with a specified key and a value.
+```php
+new \Rudashi\Map()->set('bar', 'foo');
+// [ 'bar', 'foo' ]
 ```
 ### shift()
 Removes the first element and returns that element.
