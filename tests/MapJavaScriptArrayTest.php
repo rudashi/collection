@@ -15,7 +15,7 @@ class MapJavaScriptArrayTest extends TestCase
         $keys = $map->keys();
 
         self::assertInstanceOf(Map::class, $keys);
-        self::assertEquals([0, 1, 'c', null], $keys->toArray());
+        self::assertSame([0, 1, 'c', ''], $keys->toArray());
     }
 
     public function test_values(): void
@@ -26,8 +26,8 @@ class MapJavaScriptArrayTest extends TestCase
         $keys = $values->keys();
 
         self::assertInstanceOf(Map::class, $values);
-        self::assertEquals(['a', 'b', 1, 'd'], $values->toArray());
-        self::assertEquals([0, 1, 2, 3], $keys->toArray());
+        self::assertSame(['a', 'b', 1, 'd'], $values->toArray());
+        self::assertSame([0, 1, 2, 3], $keys->toArray());
     }
 
     public function test_map(): void
@@ -40,10 +40,10 @@ class MapJavaScriptArrayTest extends TestCase
         $mapper = (new Map([1, 4, 9, 16]))->map(fn($value) => $value * 2);
 
         self::assertInstanceOf(Map::class, $map);
-        self::assertEquals(['first' => 'first-test', 0 => '0-not_test'], $map->toArray());
+        self::assertSame(['first' => 'first-test', 0 => '0-not_test'], $map->toArray());
 
         self::assertInstanceOf(Map::class, $mapper);
-        self::assertEquals([2, 8, 18, 32], $mapper->toArray());
+        self::assertSame([2, 8, 18, 32], $mapper->toArray());
     }
 
     public function test_length_property(): void
@@ -51,31 +51,31 @@ class MapJavaScriptArrayTest extends TestCase
         $array = ['name' => 'Hello'];
 
         $map = new Map($array);
-        self::assertEquals(1, $map->length);
+        self::assertSame(1, $map->length);
 
         $map->push(['second' => 'password']);
-        self::assertEquals(2, $map->length);
+        self::assertSame(2, $map->length);
     }
 
     public function test_count(): void
     {
         $map = new Map(['a', 'b', 'c']);
-        self::assertEquals(3, $map->count());
+        self::assertSame(3, $map->count());
 
         $map->push('d');
-        self::assertEquals(4, $map->count());
+        self::assertSame(4, $map->count());
     }
 
     public function test_push(): void
     {
         $map = new Map();
-        self::assertEquals(0, $map->count());
+        self::assertSame(0, $map->count());
 
         $map->push('a', 'b', 'c', 'd');
 
         self::assertInstanceOf(Map::class, $map);
-        self::assertEquals(4, $map->count());
-        self::assertEquals(['a', 'b', 'c', 'd'], $map->toArray());
+        self::assertSame(4, $map->count());
+        self::assertSame(['a', 'b', 'c', 'd'], $map->toArray());
     }
 
     public function test_concat_with_array(): void
@@ -85,7 +85,7 @@ class MapJavaScriptArrayTest extends TestCase
         $results = (new Map($letters))->concat($numbers);
 
         self::assertInstanceOf(Map::class, $results);
-        self::assertEquals(['a', 'b', 'c', 1, 2, 3], $results->toArray());
+        self::assertSame(['a', 'b', 'c', 1, 2, 3], $results->toArray());
     }
 
     public function test_concat_with_multiple_arrays(): void
@@ -96,7 +96,7 @@ class MapJavaScriptArrayTest extends TestCase
         $results = (new Map($num1))->concat($num2, $num3);
 
         self::assertInstanceOf(Map::class, $results);
-        self::assertEquals([1, 2, 3, 4, 5, 6, 7, 8, 9], $results->toArray());
+        self::assertSame([1, 2, 3, 4, 5, 6, 7, 8, 9], $results->toArray());
     }
 
     public function test_concat_different_values(): void
@@ -105,7 +105,7 @@ class MapJavaScriptArrayTest extends TestCase
         $results = (new Map($letters))->concat(1, [2, 3]);
 
         self::assertInstanceOf(Map::class, $results);
-        self::assertEquals(['a', 'b', 'c', 1, 2, 3], $results->toArray());
+        self::assertSame(['a', 'b', 'c', 1, 2, 3], $results->toArray());
     }
 
     public function test_concat_nested_arrays(): void
@@ -115,7 +115,7 @@ class MapJavaScriptArrayTest extends TestCase
         $results = (new Map($num1))->concat($num2);
 
         self::assertInstanceOf(Map::class, $results);
-        self::assertEquals([[1], 2, [3]], $results->toArray());
+        self::assertSame([[1], 2, [3]], $results->toArray());
     }
 
     public function test_concat_map(): void
@@ -127,7 +127,7 @@ class MapJavaScriptArrayTest extends TestCase
         $results = $first->concat($second)->concat($third);
 
         self::assertInstanceOf(Map::class, $results);
-        self::assertEquals([1, 2, 'a', 'b', 'foo', 'bar'], $results->toArray());
+        self::assertSame([1, 2, 'a', 'b', 'foo', 'bar'], $results->toArray());
     }
 
     public function test_filter(): void
@@ -138,7 +138,7 @@ class MapJavaScriptArrayTest extends TestCase
         });
 
         self::assertInstanceOf(Map::class, $results);
-        self::assertEquals([3 => 'exuberant', 4 => 'destruction', 5 => 'present'], $results->toArray());
+        self::assertSame([3 => 'exuberant', 4 => 'destruction', 5 => 'present'], $results->toArray());
     }
 
     public function test_filter_with_reset_keys(): void
@@ -149,7 +149,7 @@ class MapJavaScriptArrayTest extends TestCase
         }, true);
 
         self::assertInstanceOf(Map::class, $results);
-        self::assertEquals([0 => 'exuberant', 1 => 'destruction', 2 => 'present'], $results->toArray());
+        self::assertSame([0 => 'exuberant', 1 => 'destruction', 2 => 'present'], $results->toArray());
     }
 
     public function test_filter_searching(): void
@@ -160,8 +160,8 @@ class MapJavaScriptArrayTest extends TestCase
 
         self::assertInstanceOf(Map::class, $first);
         self::assertInstanceOf(Map::class, $second);
-        self::assertEquals(['apple', 'grapes'], $first->toArray());
-        self::assertEquals(['banana', 'mango', 'orange'], $second->toArray());
+        self::assertSame(['apple', 'grapes'], $first->toArray());
+        self::assertSame(['banana', 'mango', 'orange'], $second->toArray());
     }
 
     public function test_filter_callback_nested(): void
@@ -170,7 +170,7 @@ class MapJavaScriptArrayTest extends TestCase
         $mapper = $map->filter(fn($item) => $item['id'] === 2, true);
 
         self::assertInstanceOf(Map::class, $mapper);
-        self::assertEquals([['id' => 2, 'name' => 'bar']], $mapper->toArray());
+        self::assertSame([['id' => 2, 'name' => 'bar']], $mapper->toArray());
     }
 
     public function test_filter_callback_with_key(): void
@@ -179,7 +179,7 @@ class MapJavaScriptArrayTest extends TestCase
         $mapper = $map->filter(fn($item, $key) => $key !== 'id');
 
         self::assertInstanceOf(Map::class, $mapper);
-        self::assertEquals(['name' => 'foo', 'title' => 'bar'], $mapper->toArray());
+        self::assertSame(['name' => 'foo', 'title' => 'bar'], $mapper->toArray());
     }
 
     public function test_filter_no_callback(): void
@@ -188,24 +188,24 @@ class MapJavaScriptArrayTest extends TestCase
         $mapper = $map->filter(null, true);
 
         self::assertInstanceOf(Map::class, $mapper);
-        self::assertEquals([1, 'foo', 3], $mapper->toArray());
+        self::assertSame([1, 'foo', 3], $mapper->toArray());
     }
 
     public function test_copy_within(): void
     {
-        self::assertEquals([1, 2, 3, 4, 5], (new Map([1, 2, 3, 4, 5]))->copyWithin(5)->toArray());
-        self::assertEquals([1, 2, 1, 2, 3], (new Map([1, 2, 3, 4, 5]))->copyWithin(2)->toArray());
-        self::assertEquals([1, 2, 3, 1, 2], (new Map([1, 2, 3, 4, 5]))->copyWithin(-2)->toArray());
-        self::assertEquals([4, 5, 3, 4, 5], (new Map([1, 2, 3, 4, 5]))->copyWithin(0, 3)->toArray());
-        self::assertEquals([4, 2, 3, 4, 5], (new Map([1, 2, 3, 4, 5]))->copyWithin(0, 3, 4)->toArray());
-        self::assertEquals([1, 2, 3, 3, 4], (new Map([1, 2, 3, 4, 5]))->copyWithin(-2, -3, -1)->toArray());
+        self::assertSame([1, 2, 3, 4, 5], (new Map([1, 2, 3, 4, 5]))->copyWithin(5)->toArray());
+        self::assertSame([1, 2, 1, 2, 3], (new Map([1, 2, 3, 4, 5]))->copyWithin(2)->toArray());
+        self::assertSame([1, 2, 3, 1, 2], (new Map([1, 2, 3, 4, 5]))->copyWithin(-2)->toArray());
+        self::assertSame([4, 5, 3, 4, 5], (new Map([1, 2, 3, 4, 5]))->copyWithin(0, 3)->toArray());
+        self::assertSame([4, 2, 3, 4, 5], (new Map([1, 2, 3, 4, 5]))->copyWithin(0, 3, 4)->toArray());
+        self::assertSame([1, 2, 3, 3, 4], (new Map([1, 2, 3, 4, 5]))->copyWithin(-2, -3, -1)->toArray());
     }
 
     public function test_entries(): void
     {
         $map = new Map(['a', 'b', 'c']);
 
-        self::assertEquals([0 => 'a', 1 => 'b', 2 => 'c'], $map->entries());
+        self::assertSame([0 => 'a', 1 => 'b', 2 => 'c'], $map->entries());
     }
 
     public function test_includes(): void
@@ -246,15 +246,15 @@ class MapJavaScriptArrayTest extends TestCase
     {
         $map = new Map([1, 2, 3]);
 
-        self::assertEquals([4, 4, 4], $map->fill(4)->toArray());
-        self::assertEquals([1, 4, 4], $map->fill(4, 1)->toArray());
-        self::assertEquals([1, 4, 3], $map->fill(4, 1, 2)->toArray());
-        self::assertEquals([1, 2, 3], $map->fill(4, 1, 1)->toArray());
-        self::assertEquals([1, 2, 3], $map->fill(4, 3, 3)->toArray());
-        self::assertEquals([4, 2, 3], $map->fill(4, -3, -2)->toArray());
-        self::assertEquals([1, 2, 3], $map->fill(4, 3, 5)->toArray());
+        self::assertSame([4, 4, 4], $map->fill(4)->toArray());
+        self::assertSame([1, 4, 4], $map->fill(4, 1)->toArray());
+        self::assertSame([1, 4, 3], $map->fill(4, 1, 2)->toArray());
+        self::assertSame([1, 2, 3], $map->fill(4, 1, 1)->toArray());
+        self::assertSame([1, 2, 3], $map->fill(4, 3, 3)->toArray());
+        self::assertSame([4, 2, 3], $map->fill(4, -3, -2)->toArray());
+        self::assertSame([1, 2, 3], $map->fill(4, 3, 5)->toArray());
         self::assertEquals([(object) ['foo' => 'bar'], (object) ['foo' => 'bar'], (object) ['foo' => 'bar']], $map->fill((object) ['foo' => 'bar'])->toArray());
-        self::assertEquals([4, 4, 4], Map::from(3)->fill(4)->toArray());
+        self::assertSame([4, 4, 4], Map::from(3)->fill(4)->toArray());
     }
 
     public function test_fill_matrix(): void
@@ -266,9 +266,9 @@ class MapJavaScriptArrayTest extends TestCase
         }
         $map->get(0)->set(0, 10);
 
-        self::assertEquals(10, $map->get(0)->get(0));
-        self::assertEquals(1, $map->get(1)->get(0));
-        self::assertEquals(1, $map->get(2)->get(0));
+        self::assertSame(10, $map->get(0)->get(0));
+        self::assertSame(1, $map->get(1)->get(0));
+        self::assertSame(1, $map->get(2)->get(0));
     }
 
     public function test_find(): void
@@ -279,8 +279,8 @@ class MapJavaScriptArrayTest extends TestCase
             ['name' => 'cherries', 'quantity' => 5]
         ]);
 
-        self::assertEquals(['name' => 'cherries', 'quantity' => 5], $map->find(fn($value) => $value['name'] === 'cherries'));
-        self::assertEquals(['name' => 'bananas', 'quantity' => 0], $map->find(fn($value) => $value['quantity'] === 0));
+        self::assertSame(['name' => 'cherries', 'quantity' => 5], $map->find(fn($value) => $value['name'] === 'cherries'));
+        self::assertSame(['name' => 'bananas', 'quantity' => 0], $map->find(fn($value) => $value['quantity'] === 0));
     }
 
     public function test_find_nothing(): void
@@ -294,7 +294,7 @@ class MapJavaScriptArrayTest extends TestCase
     {
         $map = new Map([5, 12, 8, 130, 44]);
 
-        self::assertEquals(3, $map->findIndex(fn($value) => $value > 13));
+        self::assertSame(3, $map->findIndex(fn($value) => $value > 13));
     }
 
     public function test_findIndex_nothing(): void
@@ -308,50 +308,50 @@ class MapJavaScriptArrayTest extends TestCase
     {
         $map = new Map([1, 2, [3, 4]]);
 
-        self::assertEquals([1, 2, 3, 4], $map->flat()->toArray());
+        self::assertSame([1, 2, 3, 4], $map->flat()->toArray());
     }
 
     public function test_flat_infinite(): void
     {
         $map = new Map([1, 2, [3, 4, [5, 6, [7, 8, [9, 10]]]]]);
 
-        self::assertEquals([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], $map->flat(INF)->toArray());
+        self::assertSame([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], $map->flat(INF)->toArray());
     }
 
     public function test_flat_none(): void
     {
         $map = new Map([0, 1, 2, [[[3, 4]]]]);
 
-        self::assertEquals([0, 1, 2, [[[3, 4]]]], $map->flat(0)->toArray());
+        self::assertSame([0, 1, 2, [[[3, 4]]]], $map->flat(0)->toArray());
     }
 
     public function test_flat_recursive(): void
     {
         $map = new Map([1, 2, [3, 4, [[5, 6]]]]);
 
-        self::assertEquals([1, 2, 3, 4, [5, 6]], $map->flat(2)->toArray());
+        self::assertSame([1, 2, 3, 4, [5, 6]], $map->flat(2)->toArray());
     }
 
     public function test_flat_traversable(): void
     {
         $map = new Map([[1, 2], new Map([3, 4, [5, 6]])]);
 
-        self::assertEquals([1, 2, 3, 4, [5, 6]], $map->flat()->toArray());
+        self::assertSame([1, 2, 3, 4, [5, 6]], $map->flat()->toArray());
     }
 
     public function test_flat_mixed(): void
     {
         $map = new Map([['Wind', 'Water', ['Fire', null]], [1, 'a', true]]);
 
-        self::assertEquals(['Wind', 'Water', 'Fire', null, 1, 'a', true], $map->flat(INF)->toArray());
+        self::assertSame(['Wind', 'Water', 'Fire', null, 1, 'a', true], $map->flat(INF)->toArray());
     }
 
     public function test_flatMap(): void
     {
         $map = new Map([1, 2, 3, 4]);
 
-        self::assertEquals([1, 2, 2, 4, 3, 6, 4, 8], $map->flatMap(fn($x) => [$x, $x * 2])->toArray());
-        self::assertEquals([[2], [4], [6], [8]], $map->flatMap(fn($x) => [[$x * 2]])->toArray());
+        self::assertSame([1, 2, 2, 4, 3, 6, 4, 8], $map->flatMap(fn($x) => [$x, $x * 2])->toArray());
+        self::assertSame([[2], [4], [6], [8]], $map->flatMap(fn($x) => [[$x * 2]])->toArray());
     }
 
     public function test_flatMap_with_function(): void
@@ -360,7 +360,7 @@ class MapJavaScriptArrayTest extends TestCase
         $mapper = $map->flatMap(fn($x) => explode(' ', $x));
         
         self::assertInstanceOf(Map::class, $mapper);
-        self::assertEquals(['it`s', 'Sunny', 'in', '', 'California'], $mapper->toArray());
+        self::assertSame(['it`s', 'Sunny', 'in', '', 'California'], $mapper->toArray());
     }
 
     public function test_flatMap_mutation(): void
@@ -374,7 +374,7 @@ class MapJavaScriptArrayTest extends TestCase
         });
 
         self::assertInstanceOf(Map::class, $mapper);
-        self::assertEquals([4, 1, 4, 20, 16, 1, 18], $mapper->toArray());
+        self::assertSame([4, 1, 4, 20, 16, 1, 18], $mapper->toArray());
     }
 
     public function test_forEach(): void
@@ -387,8 +387,8 @@ class MapJavaScriptArrayTest extends TestCase
         });
 
         self::assertInstanceOf(Map::class, $map);
-        self::assertEquals([2, 5, 9], $mapper->toArray());
-        self::assertEquals([4, 10, 18], $result);
+        self::assertSame([2, 5, 9], $mapper->toArray());
+        self::assertSame([4, 10, 18], $result);
     }
 
     public function test_forEach_with_break(): void
@@ -405,8 +405,8 @@ class MapJavaScriptArrayTest extends TestCase
         });
 
         self::assertInstanceOf(Map::class, $map);
-        self::assertEquals([2, 5, '', 9], $mapper->toArray());
-        self::assertEquals([4, 10], $result);
+        self::assertSame([2, 5, '', 9], $mapper->toArray());
+        self::assertSame([4, 10], $result);
     }
 
     public function test_isArray(): void
@@ -432,7 +432,7 @@ class MapJavaScriptArrayTest extends TestCase
         $map = Map::of('a', 'b', ['c' => 1, null => 'd'], null);
 
         self::assertInstanceOf(Map::class, $map);
-        self::assertEquals(['a', 'b', ['c' => 1, null => 'd'], null], $map->toArray());
+        self::assertSame(['a', 'b', ['c' => 1, null => 'd'], null], $map->toArray());
     }
 
     public function test_indexOf(): void
@@ -440,12 +440,12 @@ class MapJavaScriptArrayTest extends TestCase
         $map = new Map(['ant', 'bison', 'camel', 'duck', 'bison']);
 
         self::assertInstanceOf(Map::class, $map);
-        self::assertEquals(1, $map->indexOf('bison'));
-        self::assertEquals(4, $map->indexOf('bison', 2));
-        self::assertEquals(-1, $map->indexOf('bison', 5));
-        self::assertEquals(1, $map->indexOf('bison', -4));
-        self::assertEquals(4, $map->indexOf('bison', -3));
-        self::assertEquals(-1, $map->indexOf('giraffe'));
+        self::assertSame(1, $map->indexOf('bison'));
+        self::assertSame(4, $map->indexOf('bison', 2));
+        self::assertSame(-1, $map->indexOf('bison', 5));
+        self::assertSame(1, $map->indexOf('bison', -4));
+        self::assertSame(4, $map->indexOf('bison', -3));
+        self::assertSame(-1, $map->indexOf('giraffe'));
     }
 
     public function test_indexOf_on_multidimensional_array(): void
@@ -453,9 +453,9 @@ class MapJavaScriptArrayTest extends TestCase
         $map = new Map(['ant', 'bison', 'pet' => 'camel', 'duck', 'bison']);
 
         self::assertInstanceOf(Map::class, $map);
-        self::assertEquals(1, $map->indexOf('bison'));
-        self::assertEquals('pet', $map->indexOf('camel'));
-        self::assertEquals(2, $map->indexOf('duck'));
+        self::assertSame(1, $map->indexOf('bison'));
+        self::assertSame('pet', $map->indexOf('camel'));
+        self::assertSame(2, $map->indexOf('duck'));
     }
 
     public function test_join(): void
@@ -464,35 +464,35 @@ class MapJavaScriptArrayTest extends TestCase
         $one = new Map(['Wind']);
         $map = new Map(['Wind', 'Water', 'Fire']);
 
-        self::assertEquals('', $empty->join());
-        self::assertEquals('Wind', $one->join());
-        self::assertEquals('Wind,Water,Fire', $map->join());
-        self::assertEquals('Wind, Water, Fire', $map->join(', '));
-        self::assertEquals('Wind + Water + Fire', $map->join(' + '));
-        self::assertEquals('WindWaterFire', $map->join(''));
+        self::assertSame('', $empty->join());
+        self::assertSame('Wind', $one->join());
+        self::assertSame('Wind,Water,Fire', $map->join());
+        self::assertSame('Wind, Water, Fire', $map->join(', '));
+        self::assertSame('Wind + Water + Fire', $map->join(' + '));
+        self::assertSame('WindWaterFire', $map->join(''));
     }
 
     public function test_join_null_and_empty_arrays(): void
     {
         $map = new Map(['Fire', [], 'Water', null]);
 
-        self::assertEquals('Fire,,Water,', $map->join());
+        self::assertSame('Fire,,Water,', $map->join());
     }
 
     public function test_join_nested_arrays(): void
     {
         $map = new Map([['Wind', 'Water', ['Fire', null]], [1, 'a', true]]);
 
-        self::assertEquals('Wind,Water,Fire,,1,a,true', $map->join());
-        self::assertEquals('Wind,Water,Fire,-1,a,true', $map->join('-'));
+        self::assertSame('Wind,Water,Fire,,1,a,true', $map->join());
+        self::assertSame('Wind,Water,Fire,-1,a,true', $map->join('-'));
     }
 
     public function test_join_maps(): void
     {
         $map = new Map([new Map(['Wind', 'Water', 'Fire']), new Map([1, 'a', true])]);
 
-        self::assertEquals('Wind,Water,Fire,1,a,true', $map->join());
-        self::assertEquals('Wind,Water,Fire-1,a,true', $map->join('-'));
+        self::assertSame('Wind,Water,Fire,1,a,true', $map->join());
+        self::assertSame('Wind,Water,Fire-1,a,true', $map->join('-'));
     }
 
     public function test_reverse(): void
@@ -518,12 +518,12 @@ class MapJavaScriptArrayTest extends TestCase
         $map = new Map([2, 5, 9, 2]);
 
         self::assertInstanceOf(Map::class, $map);
-        self::assertEquals(3, $map->lastIndexOf(2));
-        self::assertEquals(-1, $map->lastIndexOf(7));
-        self::assertEquals(3, $map->lastIndexOf(2, 3));
-        self::assertEquals(0, $map->lastIndexOf(2, 2));
-        self::assertEquals(0, $map->lastIndexOf(2, -2));
-        self::assertEquals(3, $map->lastIndexOf(2, -1));
+        self::assertSame(3, $map->lastIndexOf(2));
+        self::assertSame(-1, $map->lastIndexOf(7));
+        self::assertSame(3, $map->lastIndexOf(2, 3));
+        self::assertSame(0, $map->lastIndexOf(2, 2));
+        self::assertSame(0, $map->lastIndexOf(2, -2));
+        self::assertSame(3, $map->lastIndexOf(2, -1));
     }
 
     public function test_lastIndexOf_on_multidimensional_array(): void
@@ -531,9 +531,9 @@ class MapJavaScriptArrayTest extends TestCase
         $map = new Map(['ant', 'bison', 'pet' => 'camel', 'duck', 'bison']);
 
         self::assertInstanceOf(Map::class, $map);
-        self::assertEquals(3, $map->lastIndexOf('bison'));
-        self::assertEquals('pet', $map->lastIndexOf('camel'));
-        self::assertEquals(2, $map->lastIndexOf('duck'));
+        self::assertSame(3, $map->lastIndexOf('bison'));
+        self::assertSame('pet', $map->lastIndexOf('camel'));
+        self::assertSame(2, $map->lastIndexOf('duck'));
     }
 
     public function test_pop(): void
@@ -542,8 +542,8 @@ class MapJavaScriptArrayTest extends TestCase
         $popped = $map->pop();
 
         self::assertInstanceOf(Map::class, $map);
-        self::assertEquals(['angel', 'clown', 'mandarin'], $map->toArray());
-        self::assertEquals('sturgeon', $popped);
+        self::assertSame(['angel', 'clown', 'mandarin'], $map->toArray());
+        self::assertSame('sturgeon', $popped);
     }
 
     public function test_reduce(): void
@@ -555,7 +555,7 @@ class MapJavaScriptArrayTest extends TestCase
 
         self::assertInstanceOf(Map::class, $map);
         self::assertIsInt($sum);
-        self::assertEquals(6, $sum);
+        self::assertSame(6, $sum);
     }
 
     public function test_reduce_flatten(): void
@@ -566,7 +566,7 @@ class MapJavaScriptArrayTest extends TestCase
         }, new Map());
 
         self::assertInstanceOf(Map::class, $flattened);
-        self::assertEquals([0, 1, 2, 3, 4, 5], $flattened->toArray());
+        self::assertSame([0, 1, 2, 3, 4, 5], $flattened->toArray());
     }
 
     public function test_reduce_counting_instances_of_values(): void
@@ -583,7 +583,7 @@ class MapJavaScriptArrayTest extends TestCase
 
         self::assertInstanceOf(Map::class, $map);
         self::assertIsArray($countedNames);
-        self::assertEquals(['Alice' => 2, 'Bob' => 1, 'Tiff' => 1, 'Bruce' => 1], $countedNames);
+        self::assertSame(['Alice' => 2, 'Bob' => 1, 'Tiff' => 1, 'Bruce' => 1], $countedNames);
     }
 
     public function test_reduce_group_by(): void
@@ -626,7 +626,7 @@ class MapJavaScriptArrayTest extends TestCase
         }, []);
 
         self::assertInstanceOf(Map::class, $map);
-        self::assertEquals(['a', 'b', 'c', 'e', 'd'], $myArrayWithNoDuplicates);
+        self::assertSame(['a', 'b', 'c', 'e', 'd'], $myArrayWithNoDuplicates);
     }
 
     public function test_reduceRight(): void
@@ -636,7 +636,7 @@ class MapJavaScriptArrayTest extends TestCase
 
         self::assertInstanceOf(Map::class, $map);
         self::assertIsInt($sum);
-        self::assertEquals(6, $sum);
+        self::assertSame(6, $sum);
     }
 
     public function test_reduceRight_flatten(): void
@@ -647,7 +647,7 @@ class MapJavaScriptArrayTest extends TestCase
         }, new Map());
 
         self::assertInstanceOf(Map::class, $flattened);
-        self::assertEquals([4, 5, 2, 3, 0, 1], $flattened->toArray());
+        self::assertSame([4, 5, 2, 3, 0, 1], $flattened->toArray());
     }
 
     public function test_reduceRight_concat_string(): void
@@ -656,7 +656,7 @@ class MapJavaScriptArrayTest extends TestCase
         $right = $map->reduceRight(fn($prev, $curr) => $prev . $curr);
 
         self::assertInstanceOf(Map::class, $map);
-        self::assertEquals('54321', $right);
+        self::assertSame('54321', $right);
     }
 
     public function test_shift(): void
@@ -665,21 +665,21 @@ class MapJavaScriptArrayTest extends TestCase
         $shifted = $map->shift();
 
         self::assertInstanceOf(Map::class, $map);
-        self::assertEquals(['clown', 'mandarin', 'surgeon'], $map->toArray());
-        self::assertEquals('angel', $shifted);
+        self::assertSame(['clown', 'mandarin', 'surgeon'], $map->toArray());
+        self::assertSame('angel', $shifted);
     }
 
     public function test_slice(): void
     {
         $map = new Map(['ant', 'bison', 'camel', 'duck', 'elephant']);
 
-        self::assertEquals([2 => 'camel', 3 => 'duck', 4 => 'elephant'], $map->slice(2)->toArray());
-        self::assertEquals([], $map->slice(2, 2)->toArray());
-        self::assertEquals([2 => 'camel', 3 => 'duck'], $map->slice(2, 4)->toArray());
-        self::assertEquals([1 => 'bison', 2 =>'camel', 3 => 'duck', 4 => 'elephant'], $map->slice(1, 5)->toArray());
-        self::assertEquals([1 => 'bison', 2 =>'camel', 3 => 'duck'], $map->slice(1, 4)->toArray());
-        self::assertEquals([3 => 'duck', 4 => 'elephant'], $map->slice(-2)->toArray());
-        self::assertEquals([2 =>'camel', 3 => 'duck'], $map->slice(2, -1)->toArray());
+        self::assertSame([2 => 'camel', 3 => 'duck', 4 => 'elephant'], $map->slice(2)->toArray());
+        self::assertSame([], $map->slice(2, 2)->toArray());
+        self::assertSame([2 => 'camel', 3 => 'duck'], $map->slice(2, 4)->toArray());
+        self::assertSame([1 => 'bison', 2 =>'camel', 3 => 'duck', 4 => 'elephant'], $map->slice(1, 5)->toArray());
+        self::assertSame([1 => 'bison', 2 =>'camel', 3 => 'duck'], $map->slice(1, 4)->toArray());
+        self::assertSame([3 => 'duck', 4 => 'elephant'], $map->slice(-2)->toArray());
+        self::assertSame([2 =>'camel', 3 => 'duck'], $map->slice(2, -1)->toArray());
     }
 
     public function test_some(): void
@@ -697,7 +697,7 @@ class MapJavaScriptArrayTest extends TestCase
         $map = (new Map([-1, 4, 2, 0, 5, 1, 3, -2]))->sort();
 
         self::assertInstanceOf(Map::class, $map);
-        self::assertEquals([-2, -1, 0, 1, 2, 3, 4, 5], $map->toArray());
+        self::assertSame([-2, -1, 0, 1, 2, 3, 4, 5], $map->toArray());
     }
 
     public function test_sort_with_callback(): void
@@ -712,7 +712,7 @@ class MapJavaScriptArrayTest extends TestCase
         });
 
         self::assertInstanceOf(Map::class, $map);
-        self::assertEquals([
+        self::assertSame([
             ['name' => 'Eagle',  'grade' => 13],
             ['name' => 'Sam',    'grade' => 14],
             ['name' => 'Alex',   'grade' => 15],
@@ -726,8 +726,8 @@ class MapJavaScriptArrayTest extends TestCase
         $removed = $map->splice(2);
 
         self::assertInstanceOf(Map::class, $removed);
-        self::assertEquals(['angel', 'clown'], $map->toArray());
-        self::assertEquals(['mandarin', 'sturgeon'], $removed->toArray());
+        self::assertSame(['angel', 'clown'], $map->toArray());
+        self::assertSame(['mandarin', 'sturgeon'], $removed->toArray());
     }
 
     public function test_splice_with_delete_count(): void
@@ -736,8 +736,8 @@ class MapJavaScriptArrayTest extends TestCase
         $removed = $map->splice(2, 2);
 
         self::assertInstanceOf(Map::class, $removed);
-        self::assertEquals(['parrot', 'anemone', 'sturgeon'], $map->toArray());
-        self::assertEquals(['blue', 'trumpet'], $removed->toArray());
+        self::assertSame(['parrot', 'anemone', 'sturgeon'], $map->toArray());
+        self::assertSame(['blue', 'trumpet'], $removed->toArray());
     }
 
     public function test_splice_with_negative_delete_count(): void
@@ -746,8 +746,8 @@ class MapJavaScriptArrayTest extends TestCase
         $removed = $map->splice(-2, 1);
 
         self::assertInstanceOf(Map::class, $removed);
-        self::assertEquals(['angel', 'clown', 'sturgeon'], $map->toArray());
-        self::assertEquals(['mandarin'], $removed->toArray());
+        self::assertSame(['angel', 'clown', 'sturgeon'], $map->toArray());
+        self::assertSame(['mandarin'], $removed->toArray());
     }
 
     public function test_splice_with_delete_count_and_replacements(): void
@@ -756,8 +756,8 @@ class MapJavaScriptArrayTest extends TestCase
         $removed = $map->splice(0, 2, 'parrot', 'anemone', 'blue');
 
         self::assertInstanceOf(Map::class, $removed);
-        self::assertEquals(['parrot', 'anemone', 'blue', 'trumpet', 'sturgeon'], $map->toArray());
-        self::assertEquals(['angel', 'clown'], $removed->toArray());
+        self::assertSame(['parrot', 'anemone', 'blue', 'trumpet', 'sturgeon'], $map->toArray());
+        self::assertSame(['angel', 'clown'], $removed->toArray());
     }
 
     public function test_splice_with_replacements_and_without_removing(): void
@@ -766,8 +766,8 @@ class MapJavaScriptArrayTest extends TestCase
         $removed = $map->splice(2, 0, 'drum', 'guitar');
 
         self::assertInstanceOf(Map::class, $removed);
-        self::assertEquals(['angel', 'clown', 'drum', 'guitar', 'mandarin', 'sturgeon'], $map->toArray());
-        self::assertEquals([], $removed->toArray());
+        self::assertSame(['angel', 'clown', 'drum', 'guitar', 'mandarin', 'sturgeon'], $map->toArray());
+        self::assertSame([], $removed->toArray());
     }
 
     public function test_toString(): void
@@ -775,7 +775,7 @@ class MapJavaScriptArrayTest extends TestCase
         $map = new Map([1, 2, 'a', '1a']);
 
         self::assertInstanceOf(Map::class, $map);
-        self::assertEquals('1,2,a,1a', $map->toString());
+        self::assertSame('1,2,a,1a', $map->toString());
     }
 
     public function test_unshift(): void
@@ -784,7 +784,7 @@ class MapJavaScriptArrayTest extends TestCase
         $map->unshift(1, 2, 3);
 
         self::assertInstanceOf(Map::class, $map);
-        self::assertEquals([1, 2, 3, 4, 5, 6], $map->toArray());
+        self::assertSame([1, 2, 3, 4, 5, 6], $map->toArray());
     }
 
     public function test_unshift_multiple_time(): void
@@ -795,7 +795,7 @@ class MapJavaScriptArrayTest extends TestCase
         $map->unshift(3);
 
         self::assertInstanceOf(Map::class, $map);
-        self::assertEquals([3, 2, 1, 4, 5, 6], $map->toArray());
+        self::assertSame([3, 2, 1, 4, 5, 6], $map->toArray());
     }
 
     public function test_unshift_nested_array(): void
@@ -804,7 +804,7 @@ class MapJavaScriptArrayTest extends TestCase
         $map->unshift([-4, -3]);
 
         self::assertInstanceOf(Map::class, $map);
-        self::assertEquals([[-4, -3], 0, 1, 2], $map->toArray());
+        self::assertSame([[-4, -3], 0, 1, 2], $map->toArray());
     }
 
     public function test_at(): void
@@ -812,9 +812,9 @@ class MapJavaScriptArrayTest extends TestCase
         $map = new Map(['apple', 'banana', 'pear']);
 
         self::assertInstanceOf(Map::class, $map);
-        self::assertEquals(null, $map->at(-4));
-        self::assertEquals('pear', $map->at(-1));
-        self::assertEquals('banana', $map->at(1));
+        self::assertNull($map->at(-4));
+        self::assertSame('pear', $map->at(-1));
+        self::assertSame('banana', $map->at(1));
     }
 
 }
