@@ -10,7 +10,7 @@ use Rudashi\Contracts\EnumeratedInterface;
 use Rudashi\Contracts\JavaScriptArrayInterface;
 use Rudashi\Contracts\JavaScriptMapInterface;
 use Rudashi\Traits\Arrayable;
-use Traversable;
+use Rudashi\Traits\Enumerable;
 use TypeError;
 
 /**
@@ -19,27 +19,14 @@ use TypeError;
  */
 class Map implements JavaScriptArrayInterface, JavaScriptMapInterface, EnumeratedInterface, ArrayInterface
 {
-    use Arrayable;
+    use Arrayable,
+        Enumerable;
 
     protected array $items = [];
 
     public function __construct($items = [])
     {
         $this->items = $this->getArray($items);
-    }
-
-    private function getArray($items): array
-    {
-        switch (true) {
-            case is_array($items):
-                return $items;
-            case $items instanceof EnumeratedInterface:
-                return $items->all();
-            case $items instanceof Traversable:
-                return iterator_to_array($items);
-            default:
-                return $items !== null ? [$items] : [];
-        }
     }
 
     /**
@@ -166,6 +153,7 @@ class Map implements JavaScriptArrayInterface, JavaScriptMapInterface, Enumerate
     /**
      * Returns the number of elements.
      * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/length
+     * @link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map/size
      *
      * @return int
      */
@@ -749,11 +737,6 @@ class Map implements JavaScriptArrayInterface, JavaScriptMapInterface, Enumerate
     public function values(): self
     {
         return new static(array_values($this->items));
-    }
-
-    public function all(): array
-    {
-        return $this->items;
     }
 
     /**
