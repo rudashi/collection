@@ -517,7 +517,7 @@ class Map implements JavaScriptArrayInterface, JavaScriptMapInterface, Enumerate
      */
     public function map(callable $callback): self
     {
-        $keys = array_keys($this->items );
+        $keys = array_keys($this->items);
         $elements = array_map($callback, $this->items, $keys);
 
         return new static(array_combine($keys, $elements) ?: []);
