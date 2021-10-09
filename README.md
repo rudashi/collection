@@ -7,6 +7,7 @@ Easy and elegant wrapper for PHP arrays.
 - [Styles](#styles)
   - [JavaScript Array](#javascript-array)
   - [JavaScript Map](#javascript-map)
+  - [JavaScript Set](#javascript-set)
 - [Basic Usage](#basic-usage)
   - [Create](#create)
   - [Access](#access)
@@ -19,6 +20,7 @@ Easy and elegant wrapper for PHP arrays.
 ```bash
 composer require rudashi/collection
 ```
+
 ## Styles
 
 ### JavaScript Array
@@ -69,6 +71,10 @@ composer require rudashi/collection
 * [keys()](#keys)
 * [set()](#set)
 * [values()](#values)
+
+### JavaScript Set
+* [@property size](#size)
+* [has()](#has)
 
 ## Basic Usage
 ### Create
