@@ -74,7 +74,14 @@ composer require rudashi/collection
 
 ### JavaScript Set
 * [@property size](#size)
+* [add()](#add)
+* [clear()](#clear)
+* [delete()](#delete)
+* [entries()](#entries)
+* [foreach()](#foreach)
 * [has()](#has)
+* [keys()](#keys)
+* [values()](#values)
 
 ## Basic Usage
 ### Create
@@ -112,6 +119,7 @@ composer require rudashi/collection
 * [values()](#values)
 
 ### Mutation
+* [add()](#add)
 * [clear()](#clear)
 * [concat()](#concat)
 * [copyWithin()](#copywithin)
@@ -130,6 +138,7 @@ composer require rudashi/collection
 * [unshift()](#unshift)
 
 ### Available Methods
+* [add()](#add)
 * [all()](#all)
 * [at()](#at)
 * [clear()](#clear)
@@ -188,6 +197,12 @@ Alias for the [count()](#count) method.
 ### size
 Alias for the [count()](#count) method.
 
+### add()
+Adds a new element with a specified value to the end.
+```php
+new \Rudashi\Set([1, 2, 3])->add(5);
+// [ 1, 2, 3, 5]
+```
 ### all()
 Returns all the items in the collection.
 ```php
