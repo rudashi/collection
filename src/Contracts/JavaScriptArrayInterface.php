@@ -2,8 +2,6 @@
 
 namespace Rudashi\Contracts;
 
-use Closure;
-
 interface JavaScriptArrayInterface
 {
 
@@ -21,9 +19,9 @@ interface JavaScriptArrayInterface
 
     public function filter(callable $callback = null, bool $reset_keys = false): self;
 
-    public function find(Closure $callback, $default = null);
+    public function find(callable $callback, $default = null);
 
-    public function findIndex(Closure $callback);
+    public function findIndex(callable $callback);
 
     public function flat($depth = 1): self;
 
