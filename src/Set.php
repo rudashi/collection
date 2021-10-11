@@ -6,7 +6,6 @@ use Exception;
 use Rudashi\Contracts\ArrayInterface;
 use Rudashi\Contracts\EnumeratedInterface;
 use Rudashi\Contracts\JavaScriptSetInterface;
-use Rudashi\Traits\Arrayable;
 use Rudashi\Traits\Enumerable;
 
 /**
@@ -14,21 +13,13 @@ use Rudashi\Traits\Enumerable;
  */
 class Set implements ArrayInterface, JavaScriptSetInterface, EnumeratedInterface
 {
-    use Arrayable,
-        Enumerable;
+    use Enumerable;
 
     protected array $items = [];
 
-    public function __construct($items = null)
+    public function __construct(...$items)
     {
-        $this->items = $items
-            ? $this->getArray(
-                array_values(array_filter($items, static function($v, $k) use ($items) {
-                    return array_search($v, $items, true) === $k;
-                }, ARRAY_FILTER_USE_BOTH))
-            )
-            : []
-        ;
+        $this->items = $this->getArrayItems(func_num_args() === 1 ? $items[0] : $items);
     }
 
     /**
@@ -158,6 +149,13 @@ class Set implements ArrayInterface, JavaScriptSetInterface, EnumeratedInterface
             $results[] = $value instanceof ArrayInterface ? $value->toArray() : $value;
         }
         return $results;
+    }
+
+    protected function getArray($items): array
+    {
+        return array_values(array_filter($items, static function($v, $k) use ($items) {
+            return array_search($v, $items, true) === $k;
+        }, ARRAY_FILTER_USE_BOTH));
     }
 
     /**

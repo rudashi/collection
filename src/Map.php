@@ -2,6 +2,7 @@
 
 namespace Rudashi;
 
+use ArrayAccess;
 use Closure;
 use Exception;
 use JsonException;
@@ -17,16 +18,16 @@ use TypeError;
  * @property int $length
  * @property int $size
  */
-class Map implements JavaScriptArrayInterface, JavaScriptMapInterface, EnumeratedInterface, ArrayInterface
+class Map implements JavaScriptArrayInterface, JavaScriptMapInterface, EnumeratedInterface, ArrayInterface, ArrayAccess
 {
     use Arrayable,
         Enumerable;
 
     protected array $items = [];
 
-    public function __construct($items = [])
+    public function __construct(...$items)
     {
-        $this->items = $this->getArray($items);
+        $this->items = $this->getArrayItems(func_num_args() === 1 ? $items[0] : $items);
     }
 
     /**
@@ -398,7 +399,7 @@ class Map implements JavaScriptArrayInterface, JavaScriptMapInterface, Enumerate
     public function get($key, $default = null)
     {
         if ($this->offsetExists($key)) {
-            return $this->items[$key];
+            return $this->offsetGet($key);
         }
 
         return $default instanceof Closure ? $default() : $default;
@@ -610,7 +611,7 @@ class Map implements JavaScriptArrayInterface, JavaScriptMapInterface, Enumerate
      */
     public function set($key, $value = null): self
     {
-        $this->items[$key] = $value;
+        $this->offsetSet($key, $value);
 
         return $this;
     }

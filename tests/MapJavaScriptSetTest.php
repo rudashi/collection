@@ -8,7 +8,7 @@ use Rudashi\Set;
 class MapJavaScriptSetTest extends TestCase
 {
 
-    public function test_create_set(): void
+    public function test_constructor(): void
     {
         $array = [1, 2, 3, 4, 5];
         $set = new Set($array);
@@ -18,6 +18,17 @@ class MapJavaScriptSetTest extends TestCase
         self::assertSame($array, $set->toArray());
     }
 
+    public function test_constructor_multiple_items(): void
+    {
+        $string = 'foo';
+        $array = [];
+        $number = 1;
+        $set = new Set($string, $array, $number);
+
+        self::assertInstanceOf(Set::class, $set);
+        self::assertCount(3, $set->toArray());
+        self::assertEquals([$string, $array, $number], $set->toArray());
+    }
     public function test_create_set_with_mixed_values(): void
     {
         $subSet_empty = new Set();

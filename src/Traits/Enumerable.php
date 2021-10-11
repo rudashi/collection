@@ -2,6 +2,7 @@
 
 namespace Rudashi\Traits;
 
+use Rudashi\Contracts\ArrayInterface;
 use Rudashi\Contracts\EnumeratedInterface;
 use Traversable;
 
@@ -13,17 +14,24 @@ trait Enumerable
         return $this->items;
     }
 
-    private function getArray($items): array
+    protected function getArray($items): array
+    {
+        return $items;
+    }
+
+    protected function getArrayItems($items): array
     {
         switch (true) {
             case is_array($items):
-                return $items;
+                return $this->getArray($items);
             case $items instanceof EnumeratedInterface:
                 return $items->all();
+            case $items instanceof ArrayInterface:
+                return $items->toArray();
             case $items instanceof Traversable:
                 return iterator_to_array($items);
             default:
-                return $items !== null ? [$items] : [];
+                return (array) $items;
         }
     }
 

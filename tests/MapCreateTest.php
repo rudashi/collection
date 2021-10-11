@@ -9,6 +9,37 @@ use TypeError;
 class MapCreateTest extends TestCase
 {
 
+    public function test_constructor(): void
+    {
+        $string = 'foo';
+        $map = new Map($string);
+
+        self::assertInstanceOf(Map::class, $map);
+        self::assertCount(1, $map->toArray());
+        self::assertEquals([$string], $map->toArray());
+    }
+
+    public function test_constructor_empty(): void
+    {
+        $map = new Map();
+
+        self::assertInstanceOf(Map::class, $map);
+        self::assertCount(0, $map->toArray());
+        self::assertEquals([], $map->toArray());
+    }
+
+    public function test_constructor_multiple_items(): void
+    {
+        $string = 'foo';
+        $array = [];
+        $number = 1;
+        $map = new Map($string, $array, $number);
+
+        self::assertInstanceOf(Map::class, $map);
+        self::assertCount(3, $map->toArray());
+        self::assertEquals([$string, $array, $number], $map->toArray());
+    }
+
     public function test_static_from_string(): void
     {
         $string = 'foo';
