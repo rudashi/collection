@@ -41,14 +41,7 @@ class Map implements JavaScriptArrayInterface, JavaScriptMapInterface, Enumerate
     public static function from($items = null, callable $callback = null): self
     {
         if (is_string($items)) {
-            try {
-                $items = json_decode($items, true, 512, JSON_THROW_ON_ERROR);
-                if (!is_array($items)) {
-                    throw new JsonException();
-                }
-            } catch (JsonException $e) {
-                $items = str_split($items);
-            }
+            $items = self::getFromString($items, true);
         }
         if (is_int($items) && $items > -1) {
             $items = range(0, $items - 1);

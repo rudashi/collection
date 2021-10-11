@@ -151,7 +151,7 @@ class Set implements ArrayInterface, JavaScriptSetInterface, EnumeratedInterface
         return $results;
     }
 
-    protected function getArray($items): array
+    protected static function getFromArray($items): array
     {
         return array_values(array_filter($items, static function($v, $k) use ($items) {
             return array_search($v, $items, true) === $k;
