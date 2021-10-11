@@ -5,11 +5,6 @@ namespace Rudashi\Traits;
 trait Arrayable
 {
 
-    public function toArray(): array
-    {
-        return $this->items;
-    }
-
     public function offsetExists($key): bool
     {
         return array_key_exists($key, $this->items);

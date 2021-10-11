@@ -2,9 +2,7 @@
 
 namespace Rudashi\Contracts;
 
-use ArrayAccess;
-
-interface ArrayInterface extends ArrayAccess
+interface ArrayInterface
 {
 
     public function toArray(): array;
