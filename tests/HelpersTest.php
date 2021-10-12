@@ -3,11 +3,21 @@
 namespace Tests;
 
 use PHPUnit\Framework\TestCase;
-use Rudashi\Set;
+use Rudashi\Collection;
 use Rudashi\Map;
+use Rudashi\Set;
 
 class HelpersTest extends TestCase
 {
+
+    public function test_collection_function_exists(): void
+    {
+        self::assertTrue(function_exists('collect'));
+        self::assertInstanceOf( Collection::class, collect());
+        self::assertInstanceOf( Collection::class, collect([]));
+        self::assertInstanceOf( Collection::class, collect('apple'));
+        self::assertInstanceOf( Collection::class, collect(new Collection));
+    }
 
     public function test_map_function_exists(): void
     {
