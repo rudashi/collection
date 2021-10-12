@@ -2,12 +2,12 @@
 
 namespace Rudashi;
 
-use JsonException;
+use Countable;
 use Rudashi\Contracts\ArrayInterface;
 use Rudashi\Contracts\EnumeratedInterface;
 use Rudashi\Traits\Enumerable;
 
-class Collection implements EnumeratedInterface, ArrayInterface
+class Collection implements EnumeratedInterface, ArrayInterface, Countable
 {
     use Enumerable;
 
@@ -18,14 +18,41 @@ class Collection implements EnumeratedInterface, ArrayInterface
         $this->items = $this->getArrayItems(func_num_args() === 1 ? $items[0] : $items);
     }
 
+    public function count(): int
+    {
+        return count($this->items);
+    }
+
+    public function empty(): bool
+    {
+        return $this->isEmpty();
+    }
+
+    public function isEmpty(): bool
+    {
+        return empty($this->items);
+    }
+
+    public function isNotEmpty(): bool
+    {
+        return !$this->isEmpty();
+    }
+
     public function keys(): self
     {
         return new static(array_keys($this->items));
     }
 
-    public function values(): self
+    public function toJson(int $options = JSON_THROW_ON_ERROR): string
     {
-        return new static(array_values($this->items));
+        return json_encode($this->toArray(), $options);
+    }
+
+    public function toArray(): array
+    {
+        return $this->map(function ($value) {
+            return $value instanceof ArrayInterface ? $value->toArray() : $value;
+        })->all();
     }
 
     public function map(callable $callback): self
@@ -36,21 +63,9 @@ class Collection implements EnumeratedInterface, ArrayInterface
         return new static(array_combine($keys, $items) ?: []);
     }
 
-    public function toArray(): array
+    public function values(): self
     {
-        return $this->map(function ($value) {
-            return $value instanceof ArrayInterface ? $value->toArray() : $value;
-        })->all();
-    }
-
-    /**
-     * @param int $options
-     * @return string
-     * @throws JsonException
-     */
-    public function toJson(int $options = JSON_THROW_ON_ERROR): string
-    {
-        return json_encode($this->toArray(), JSON_THROW_ON_ERROR | $options);
+        return new static(array_values($this->items));
     }
 
 }

@@ -17,6 +17,50 @@ class CollectionTest extends TestCase
         self::assertSame($array, $c->all());
     }
 
+    public function test_count(): void
+    {
+        $c = new Collection(['foo', 'bar']);
+
+        self::assertInstanceOf(Collection::class, $c);
+        self::assertSame(2, $c->count());
+    }
+
+    public function test_countable(): void
+    {
+        $c = new Collection(['foo', 'bar']);
+
+        self::assertInstanceOf(Collection::class, $c);
+        self::assertCount(2, $c);
+    }
+
+    public function test_isEmpty(): void
+    {
+        $c_1 = new Collection();
+        $c_2 = new Collection(['foo', 'bar']);
+
+        self::assertInstanceOf(Collection::class, $c_1);
+        self::assertSame(0, $c_1->count());
+        self::assertTrue($c_1->isEmpty());
+
+        self::assertInstanceOf(Collection::class, $c_2);
+        self::assertSame(2, $c_2->count());
+        self::assertFalse($c_2->isEmpty());
+    }
+
+    public function test_isNotEmpty(): void
+    {
+        $c_1 = new Collection();
+        $c_2 = new Collection(['foo', 'bar']);
+
+        self::assertInstanceOf(Collection::class, $c_1);
+        self::assertSame(0, $c_1->count());
+        self::assertFalse($c_1->isNotEmpty());
+
+        self::assertInstanceOf(Collection::class, $c_2);
+        self::assertSame(2, $c_2->count());
+        self::assertTrue($c_2->isNotEmpty());
+    }
+
     public function test_keys(): void
     {
         $c = new Collection(['first' => '111', 'second' => '222', 'third' => '333']);

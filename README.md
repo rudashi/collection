@@ -8,6 +8,7 @@ Easy and elegant wrapper for PHP arrays.
   - [JavaScript Array](#javascript-array)
   - [JavaScript Map](#javascript-map)
   - [JavaScript Set](#javascript-set)
+  - [Collection](#collection)
 - [Basic Usage](#basic-usage)
   - [Create](#create)
   - [Access](#access)
@@ -82,6 +83,18 @@ composer require rudashi/collection
 * [has()](#has)
 * [keys()](#keys)
 * [values()](#values)
+
+### Collection
+* all() : Returns the elements as a plain array
+* count() : Counts the total number of elements
+* keys() : Returns the keys of the all elements in a new Collection
+* values() : Returns the values of the all elements in a new Collection
+* map() : Calls the passed function once for each element and returns a Collection
+* toArray() : Returns the elements as a plain array
+* toJson() : Returns the elements as a JSON string
+* empty() : Alias to isEmpty()
+* isEmpty() : Determine if the Collection is empty
+* isNotEmpty() : Determine if the Collection is not empty
 
 ## Basic Usage
 ### Create
