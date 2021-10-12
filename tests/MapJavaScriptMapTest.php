@@ -2,22 +2,11 @@
 
 namespace Tests;
 
-use Rudashi\Map;
 use PHPUnit\Framework\TestCase;
+use Rudashi\Map;
 
 class MapJavaScriptMapTest extends TestCase
 {
-
-    public function test_size_property(): void
-    {
-        $array = ['name' => 'Hello'];
-
-        $map = new Map($array);
-        self::assertSame(1, $map->size);
-
-        $map->push(['second' => 'password']);
-        self::assertSame(2, $map->size);
-    }
 
     public function test_clear(): void
     {
@@ -28,14 +17,6 @@ class MapJavaScriptMapTest extends TestCase
         $map->clear();
 
         self::assertSame(0, $map->size);
-    }
-
-    public function test_has(): void
-    {
-        $map = new Map(['bar' => 'baz', 1 => 'foo']);
-
-        self::assertTrue($map->has('bar'));
-        self::assertFalse($map->has('baz'));
     }
 
     public function test_delete(): void
@@ -61,7 +42,7 @@ class MapJavaScriptMapTest extends TestCase
         $map = new Map($array);
 
         $result = [];
-        $mapper = $map->forEach(function($value, $key) use (&$result) {
+        $mapper = $map->forEach(function ($value, $key) use (&$result) {
             $result[] = $key . ($value instanceof Map ? '[]' : $value);
         });
 
@@ -76,6 +57,14 @@ class MapJavaScriptMapTest extends TestCase
 
         self::assertSame('foo', $map->get('bar'));
         self::assertNull($map->get('baz'));
+    }
+
+    public function test_has(): void
+    {
+        $map = new Map(['bar' => 'baz', 1 => 'foo']);
+
+        self::assertTrue($map->has('bar'));
+        self::assertFalse($map->has('baz'));
     }
 
     public function test_keys(): void
@@ -100,6 +89,17 @@ class MapJavaScriptMapTest extends TestCase
 
         self::assertTrue($map->has('bar'));
         self::assertSame('baz', $map->get('bar'));
+    }
+
+    public function test_size_property(): void
+    {
+        $array = ['name' => 'Hello'];
+
+        $map = new Map($array);
+        self::assertSame(1, $map->size);
+
+        $map->push(['second' => 'password']);
+        self::assertSame(2, $map->size);
     }
 
     public function test_values(): void

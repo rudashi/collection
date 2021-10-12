@@ -2,8 +2,8 @@
 
 namespace Tests;
 
-use Rudashi\Map;
 use PHPUnit\Framework\TestCase;
+use Rudashi\Map;
 use TypeError;
 
 class MapCreateTest extends TestCase
@@ -40,24 +40,38 @@ class MapCreateTest extends TestCase
         self::assertEquals([$string, $array, $number], $map->toArray());
     }
 
-    public function test_static_from_string(): void
+    public function test_failed_static_from(): void
     {
-        $string = 'foo';
-        $map = Map::from($string);
+        $this->expectException(TypeError::class);
+        $this->expectExceptionMessage('NULL is not iterable');
 
-        self::assertInstanceOf(Map::class, $map);
-        self::assertCount(3, $map->toArray());
-        self::assertEquals(['f', 'o', 'o'], $map->toArray());
-        self::assertEquals([0 => 'f', 1 => 'o', 2 => 'o'], $map->toArray());
+        Map::from();
     }
 
-    public function test_static_from_empty_string(): void
+    public function test_from_empty_json(): void
     {
-        $string = '';
-        $map = Map::from($string);
+        $map = Map::from('""');
+
         self::assertInstanceOf(Map::class, $map);
         self::assertCount(1, $map->toArray());
         self::assertEquals([''], $map->toArray());
+    }
+
+    public function test_from_json(): void
+    {
+        $map = Map::from('["a", "b"]');
+
+        self::assertInstanceOf(Map::class, $map);
+        self::assertCount(2, $map->toArray());
+        self::assertEquals(['a', 'b'], $map->toArray());
+    }
+
+    public function test_from_json_object(): void
+    {
+        $map = Map::from('{"a": "b"}');
+
+        self::assertInstanceOf(Map::class, $map);
+        self::assertEquals(['a' => 'b'], $map->toArray());
     }
 
     public function test_static_from_array(): void
@@ -68,6 +82,15 @@ class MapCreateTest extends TestCase
         self::assertInstanceOf(Map::class, $map);
         self::assertCount(4, $map->toArray());
         self::assertEquals($array, $map->toArray());
+    }
+
+    public function test_static_from_empty_string(): void
+    {
+        $string = '';
+        $map = Map::from($string);
+        self::assertInstanceOf(Map::class, $map);
+        self::assertCount(1, $map->toArray());
+        self::assertEquals([''], $map->toArray());
     }
 
     public function test_static_from_map(): void
@@ -105,50 +128,27 @@ class MapCreateTest extends TestCase
         self::assertEquals([0, 1, 2, 3, 4], $map->toArray());
     }
 
+    public function test_static_from_string(): void
+    {
+        $string = 'foo';
+        $map = Map::from($string);
+
+        self::assertInstanceOf(Map::class, $map);
+        self::assertCount(3, $map->toArray());
+        self::assertEquals(['f', 'o', 'o'], $map->toArray());
+        self::assertEquals([0 => 'f', 1 => 'o', 2 => 'o'], $map->toArray());
+    }
+
     public function test_static_from_with_callback(): void
     {
         $array = [1, 2, 3];
-        $map = Map::from($array, function($value) {
+        $map = Map::from($array, function ($value) {
             return $value + $value;
         });
 
         self::assertInstanceOf(Map::class, $map);
         self::assertCount(3, $map->toArray());
         self::assertEquals([2, 4, 6], $map->toArray());
-    }
-
-    public function test_from_json(): void
-    {
-        $map = Map::from('["a", "b"]');
-
-        self::assertInstanceOf(Map::class, $map);
-        self::assertCount(2, $map->toArray());
-        self::assertEquals(['a', 'b'], $map->toArray());
-    }
-
-    public function test_from_json_object(): void
-    {
-        $map = Map::from('{"a": "b"}');
-
-        self::assertInstanceOf(Map::class, $map);
-        self::assertEquals(['a' => 'b'], $map->toArray());
-    }
-
-    public function test_from_empty_json(): void
-    {
-        $map = Map::from('""');
-
-        self::assertInstanceOf(Map::class, $map);
-        self::assertCount(1, $map->toArray());
-        self::assertEquals([''], $map->toArray());
-    }
-
-    public function test_failed_static_from(): void
-    {
-        $this->expectException(TypeError::class);
-        $this->expectExceptionMessage('NULL is not iterable');
-
-        Map::from();
     }
 
 }

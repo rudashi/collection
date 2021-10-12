@@ -8,60 +8,6 @@ use Rudashi\Set;
 class MapJavaScriptSetTest extends TestCase
 {
 
-    public function test_constructor(): void
-    {
-        $array = [1, 2, 3, 4, 5];
-        $set = new Set($array);
-
-        self::assertInstanceOf(Set::class, $set);
-        self::assertCount(5, $set->toArray());
-        self::assertSame($array, $set->toArray());
-    }
-
-    public function test_constructor_multiple_items(): void
-    {
-        $string = 'foo';
-        $array = [];
-        $number = 1;
-        $set = new Set($string, $array, $number);
-
-        self::assertInstanceOf(Set::class, $set);
-        self::assertCount(3, $set->toArray());
-        self::assertEquals([$string, $array, $number], $set->toArray());
-    }
-    public function test_create_set_with_mixed_values(): void
-    {
-        $subSet_empty = new Set();
-        $subSet = new Set([['x' => 10, 'y' => 20], ['x' => 20, 'y' => 30]]);
-        $set = new Set(['1', 1, [], 3, 3, null, $subSet_empty, $subSet]);
-
-        self::assertInstanceOf(Set::class, $set);
-        self::assertCount(7, $set->all());
-        self::assertSame(['1', 1, [], 3, null, $subSet_empty, $subSet], $set->all());
-    }
-
-    public function test_size_property(): void
-    {
-        $first = new Set([42, 'forty two', 'forty two', new Set()]);
-        $second = new Set([1, 5, 'some text']);
-
-        self::assertSame(3, $first->size);
-        self::assertSame(3, $second->size);
-    }
-
-    public function test_has(): void
-    {
-        $subSet = new Set();
-        $set = new Set([1, 2, 3, 4, 5, $subSet]);
-
-        self::assertTrue($set->has(1));
-        self::assertTrue($set->has(5));
-        self::assertFalse($set->has('5'));
-        self::assertFalse($set->has(6));
-        self::assertTrue($set->has($subSet));
-        self::assertFalse($set->has(new Set()));
-    }
-
     public function test_add(): void
     {
         $set = new Set();
@@ -87,6 +33,39 @@ class MapJavaScriptSetTest extends TestCase
         self::assertSame(0, $set->size);
     }
 
+    public function test_constructor(): void
+    {
+        $array = [1, 2, 3, 4, 5];
+        $set = new Set($array);
+
+        self::assertInstanceOf(Set::class, $set);
+        self::assertCount(5, $set->toArray());
+        self::assertSame($array, $set->toArray());
+    }
+
+    public function test_constructor_multiple_items(): void
+    {
+        $string = 'foo';
+        $array = [];
+        $number = 1;
+        $set = new Set($string, $array, $number);
+
+        self::assertInstanceOf(Set::class, $set);
+        self::assertCount(3, $set->toArray());
+        self::assertEquals([$string, $array, $number], $set->toArray());
+    }
+
+    public function test_create_set_with_mixed_values(): void
+    {
+        $subSet_empty = new Set();
+        $subSet = new Set([['x' => 10, 'y' => 20], ['x' => 20, 'y' => 30]]);
+        $set = new Set(['1', 1, [], 3, 3, null, $subSet_empty, $subSet]);
+
+        self::assertInstanceOf(Set::class, $set);
+        self::assertCount(7, $set->all());
+        self::assertSame(['1', 1, [], 3, null, $subSet_empty, $subSet], $set->all());
+    }
+
     public function test_delete(): void
     {
         $set = new Set(['foo']);
@@ -98,12 +77,12 @@ class MapJavaScriptSetTest extends TestCase
 
     public function test_delete_nested(): void
     {
-        $set = new Set([(object) ['x' => 10, 'y' => 20], (object) ['x' => 20, 'y' => 30]]);
+        $set = new Set([(object)['x' => 10, 'y' => 20], (object)['x' => 20, 'y' => 30]]);
 
         self::assertSame(2, $set->size);
 
-        $set->forEach(function($value) use ($set) {
-            if ($value->x > 10){
+        $set->forEach(function ($value) use ($set) {
+            if ($value->x > 10) {
                 $set->delete($value);
             }
         });
@@ -124,8 +103,8 @@ class MapJavaScriptSetTest extends TestCase
         $set = new Set($array);
 
         $result = [];
-        $setter = $set->forEach(function($value) use (&$result) {
-            $result[] = 's[' . ($value instanceof Set ? '[]' : $value).']';
+        $setter = $set->forEach(function ($value) use (&$result) {
+            $result[] = 's[' . ($value instanceof Set ? '[]' : $value) . ']';
         });
 
         self::assertInstanceOf(Set::class, $setter);
@@ -133,11 +112,33 @@ class MapJavaScriptSetTest extends TestCase
         self::assertSame(['s[foo]', 's[[]]', 's[]'], $result);
     }
 
+    public function test_has(): void
+    {
+        $subSet = new Set();
+        $set = new Set([1, 2, 3, 4, 5, $subSet]);
+
+        self::assertTrue($set->has(1));
+        self::assertTrue($set->has(5));
+        self::assertFalse($set->has('5'));
+        self::assertFalse($set->has(6));
+        self::assertTrue($set->has($subSet));
+        self::assertFalse($set->has(new Set()));
+    }
+
     public function test_keys(): void
     {
         $set = new Set([42, 'forty two']);
 
         self::assertSame([42, 'forty two'], $set->keys());
+    }
+
+    public function test_size_property(): void
+    {
+        $first = new Set([42, 'forty two', 'forty two', new Set()]);
+        $second = new Set([1, 5, 'some text']);
+
+        self::assertSame(3, $first->size);
+        self::assertSame(3, $second->size);
     }
 
     public function test_values(): void
