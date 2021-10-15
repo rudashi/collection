@@ -33,6 +33,59 @@ class Collection implements EnumeratedInterface, ArrayInterface, Countable
         return empty($this->items);
     }
 
+    public function firstWhere($key, $operator, $value = null)
+    {
+        if (func_num_args() === 2) {
+            $value = $operator;
+            $operator = '=';
+        }
+
+        return $this->first(function ($item) use ($key, $operator, $value) {
+            $element = $this->itemGet($item, $key);
+
+            switch ($operator) {
+                default:
+                case '=':
+                case '==':
+                    return $element == $value;
+                case '===':
+                    return $element === $value;
+                case '!=':
+                case '<>':
+                    return $element != $value;
+                case '!==':
+                    return $element !== $value;
+                case '<':
+                    return $element < $value;
+                case '>':
+                    return $element > $value;
+                case '<=':
+                    return $element <= $value;
+                case '>=':
+                    return $element >= $value;
+            }
+        });
+    }
+
+    public function first(callable $callback = null, $default = null)
+    {
+        if (is_null($callback)) {
+            if (empty($this->items)) {
+                return $default;
+            }
+
+            return reset($this->items);
+        }
+
+        foreach ($this->items as $key => $value) {
+            if ($callback($value, $key)) {
+                return $value;
+            }
+        }
+
+        return $default;
+    }
+
     public function isNotEmpty(): bool
     {
         return !$this->isEmpty();

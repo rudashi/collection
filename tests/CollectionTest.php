@@ -33,6 +33,91 @@ class CollectionTest extends TestCase
         self::assertCount(2, $c);
     }
 
+    public function test_first(): void
+    {
+        $c = new Collection(['size' => 'XL', 'color' => 'gold']);
+
+        self::assertInstanceOf(Collection::class, $c);
+        self::assertSame('XL', $c->first());
+    }
+
+    public function test_firstWhere(): void
+    {
+        $c = new Collection([
+            ['name' => 'John', 'fav_color' => 'green'],
+            ['name' => 'Samuel', 'fav_color' => 'blue'],
+            ['name' => 'Anna', 'fav_color' => 'green', '_meta' => ['something' => 'information']],
+            ['name' => 'Jerry', 'fav_color' => 'blue', '_meta' => ['something' => 'information']],
+        ]);
+
+        self::assertInstanceOf(Collection::class, $c);
+        self::assertSame(['name' => 'John', 'fav_color' => 'green'], $c->firstWhere('fav_color', 'green'));
+        self::assertSame(['name' => 'Samuel', 'fav_color' => 'blue'], $c->firstWhere('name', 'Samuel'));
+        self::assertSame(['name' => 'Anna', 'fav_color' => 'green', '_meta' => ['something' => 'information']], $c->firstWhere('_meta.something', 'information'));
+        self::assertSame(['name' => 'Anna', 'fav_color' => 'green', '_meta' => ['something' => 'information']], $c->firstWhere(['_meta', 'something'], 'information'));
+        self::assertSame('blue', $c->firstWhere('name', 'Samuel')['fav_color']);
+        self::assertNull($c->firstWhere('name', 'nothing'));
+        self::assertNull($c->firstWhere('wrong_key', 'John'));
+    }
+
+    public function test_firstWhere_different_operator(): void
+    {
+        $c = new Collection([
+            ['order' => 1],
+            ['order' => 2],
+            ['order' => 3],
+            ['order' => 4],
+            ['order' => 5],
+        ]);
+
+        self::assertInstanceOf(Collection::class, $c);
+        self::assertSame(['order' => 4], $c->firstWhere('order', '>', 3));
+        self::assertSame(['order' => 3], $c->firstWhere('order', '>=', 3));
+        self::assertSame(['order' => 1], $c->firstWhere('order', '<', 3));
+        self::assertSame(['order' => 2], $c->firstWhere('order', '!==', 1));
+    }
+
+    public function test_firstWhere_in_collection_of_object(): void
+    {
+        $obj_1 = (object)['name' => 'John', 'fav_color' => 'green'];
+        $obj_2 = (object)['name' => 'Samuel', 'fav_color' => 'blue'];
+        $obj_3 = (object)['name' => 'Anna', 'fav_color' => 'green', '_meta' => ['something' => 'information']];
+
+        $c = new Collection([$obj_1, $obj_2, $obj_3]);
+
+        self::assertInstanceOf(Collection::class, $c);
+        self::assertSame($obj_1, $c->firstWhere('name', 'John'));
+        self::assertSame($obj_2, $c->firstWhere('name', 'Samuel'));
+        self::assertSame('blue', $c->firstWhere('name', 'Samuel')->fav_color);
+        self::assertSame($obj_3, $c->firstWhere('_meta.something', 'information'));
+        self::assertNull($c->firstWhere('name', 'nothing'));
+        self::assertNull($c->firstWhere('wrong_key', 'John'));
+    }
+
+    public function test_first_with_callback(): void
+    {
+        $c = new Collection(['size' => 'XL', 'color' => 'gold']);
+
+        self::assertInstanceOf(Collection::class, $c);
+        self::assertSame('gold', $c->first(fn($value) => $value === 'gold'));
+    }
+
+    public function test_first_with_callback_and_default(): void
+    {
+        $c = new Collection(['size' => 'XL', 'color' => 'gold']);
+
+        self::assertInstanceOf(Collection::class, $c);
+        self::assertSame('default', $c->first(fn($value) => $value === 'silver', 'default'));
+    }
+
+    public function test_first_with_default_and_without_callback(): void
+    {
+        $c = new Collection;
+
+        self::assertInstanceOf(Collection::class, $c);
+        self::assertSame('default', $c->first(null, 'default'));
+    }
+
     public function test_isEmpty(): void
     {
         $c_1 = new Collection();

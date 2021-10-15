@@ -87,6 +87,8 @@ composer require rudashi/collection
 ### Collection
 * all() : Returns the elements as a plain array
 * count() : Counts the total number of elements
+* first() : Returns the first element from Collection
+* firstWhere() : Returns the first element with given key
 * keys() : Returns the keys of the all elements in a new Collection
 * values() : Returns the values of the all elements in a new Collection
 * map() : Calls the passed function once for each element and returns a Collection
